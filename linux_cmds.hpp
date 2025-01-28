@@ -1,3 +1,6 @@
+#ifndef LINUX_CMDS_HPP
+#define LINUX_CMDS_HPP
+
 #include <string>
 
 #include "list.hpp"
@@ -9,6 +12,7 @@ struct player {
 };
 
 #define MAX_PLAYERS 25
+#define MAX_WRONG_ANS 25
 
 class linux_cmds : public list<linux_cmd_data> {
 
@@ -27,6 +31,7 @@ class linux_cmds : public list<linux_cmd_data> {
         void removeCommand();
         void saveData();
 
+        std::string getOptions(std::string rightAns);
         player* findPlayerData(std::string name);
         void nextQuestion(player* player, node<linux_cmd_data>* pNode, int questionsLeft);
 
@@ -56,3 +61,33 @@ typedef enum menu {
     PRINT_CMDS,
     EXIT,
 }MENU;
+
+const std::string wrongAns[MAX_WRONG_ANS] = {
+    "shutdown pc",
+    "makes a beeping noise",
+    "turn off fan",
+    "turns terminal pink",
+    "rename file",
+    "give up",
+    "launch firefox",
+    "enable turbo mode",
+    "start hacking",
+    "take a screenshot",// 10
+    "logout",
+    "corrupt file",
+    "unzip a file",
+    "get the answer wrong",
+    "change admin password",
+    "reboot pc",
+    "change shell",
+    "check available memory",
+    "compress a file",
+    "delete some RAM",// 20
+    "launch minesweeper",
+    "download python",
+    "close all open applications",
+    "open most recent file",
+    "change wallpaper"// 25
+};
+
+#endif

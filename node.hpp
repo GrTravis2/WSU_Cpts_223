@@ -1,3 +1,6 @@
+#ifndef NODE_HPP
+#define NODE_HPP
+
 
 template <class T>
 class node {
@@ -55,3 +58,5 @@ template <class T>
 bool node<T>::setNextPtr(node* newNextPtr) {
     this->pNext = newNextPtr;
 }
+
+#endif

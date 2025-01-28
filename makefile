@@ -1,17 +1,30 @@
-prog: main.o message.o factorial.o
-	g++ -g main.o message.o factorial.o -o ourProg
+COMPILER = g++
+FLAGS = -std=c++11
+COMPILE = $(COMPILER) $(FLAGS)
 
-main.o: main.cpp functions.h
-	g++ -c -g -Wall -std=c++11  main.cpp 
+main: main.o node.o list.o linux_cmd_data.o linux_cmds.o list_test.o
+	g++ -g main.o node.o list.o linux_cmd_data.o linux_cmds.o -o main
 
-message.o: message.cpp functions.h
-	g++ -c -g -Wall -std=c++11 message.cpp 
+main.o: main.cpp
+	COMPILE -c -g -Wall main.cpp 
 
-factorial.o: factorial.cpp functions.h
-	g++ -c -g -Wall -std=c++11 factorial.cpp 
+node.o: node.hpp
+	COMPILE -c -g -Wall node.hpp 
+
+list.o: list.hpp
+	COMPILE -c -g -Wall list.hpp
+
+linux_cmd_data.o: linux_cmd_data.cpp
+	COMPILE -c -g -Wall linux_cmd_data.cpp
+
+linux_cmds.o: linux_cmds.cpp
+	COMPILE -c -g -Wall linux_cmds.cpp
+
+list_test.o: list_test.cpp
+	COMPILE -c -g -Wall list_test.cpp 
 
 clean: 
 	-rm *.o
 
 run:
-	@./ourProg
+	@./main

@@ -64,7 +64,9 @@ void linux_cmds::printMenu() {
 }
 
 void linux_cmds::printGameRules() {
-    
+    std::cout
+    << "Select the correct description that matches the displayed linux command!\n"
+    << "The more questions you get correct, the higher your score." << std::endl;
 }
 
 void linux_cmds::printCommands() {
@@ -75,16 +77,16 @@ void linux_cmds::printCommands() {
 void linux_cmds::printLogo() {
     std::cout <<
     "ooooo       ooooo oooo   oooo ooooo  oooo ooooo  oooo\n"
-    "888         888   8888o  88   888    88    888  88  \n"
-    "888         888   88 888o88   888    88      888    \n"
-    "888      o  888   88   8888   888    88     88 888  \n"
-    "o888ooooo88 o888o o88o    88    888oo88   o88o  o888o\n"
+    "888         888   8888o  88   888    88     888  88  \n"
+    "888         888   88 888o88   888    88       888    \n"
+    "888      o  888   88   8888   888    88      88 888  \n"
+    "o888ooooo88 o888o o88o    88    888oo88    o88o  o888o\n\n"
                                                         
     "oooooooo8    oooo     oooo ooooooooo                  \n"
     "o888     88   8888o   888   888    88o                \n"
     "888           88 888o8 88   888    888                \n"
     "888o     oo   88  888  88   888    888                \n"
-    "888oooo88    o88o  8  o88o o888ooo88                  \n"
+    "888oooo88    o88o  8  o88o o888ooo88                  \n\n"
                                                         
     "ooooooo8        o      oooo     oooo ooooooooooo     \n"
     "o888    88     888      8888o   888   888    88      \n"
@@ -110,7 +112,7 @@ void linux_cmds::startNewGame() {
             std::cin >> numQuestions;
             if (numQuestions > 0) { ok = true; }
         } else {
-            std::cout << "Player name not recognized, try again." << std::endl;
+            std::cout << "Player name not found, try again." << std::endl;
     }
 
     this->nextQuestion(newPlayer, this->mpHead, numQuestions);
@@ -129,8 +131,47 @@ player* linux_cmds::findPlayerData(std::string findName) {
     return found;
 }
 void linux_cmds::nextQuestion(player* player, node<linux_cmd_data>* pNode, int questionsLeft) {
-    if (pNode != nullptr) {
+    if (pNode != nullptr && questionsLeft > 0) {// check if end of list is hit
+
+        // set up vars
+        int choice = -1;
+        linux_cmd_data data = pNode->getData();
+
+        // set up MC ans
+        std::string ans[4] = {"", "", "", ""};
+        std::string fake = "bazinga";
+        srand(time(0));
+        int correct = rand() % 4;
+        ans[correct] = data.getDescription();
+        for (int i = 0; i < 4; i++) {
+            if(ans[i] == "") {
+                // make sure fake ans are unique before assignment
+                while (fake != ans[0] || fake != ans[1] || 
+                       fake != ans[2] || fake != ans[3]) {
+                    fake = wrongAns[rand() % MAX_WRONG_ANS];
+                }
+                ans[i] = fake;
+            }
+        }
+
+        while (choice != correct && choice != QUIT) {
+            std::cout 
+            << "Use linux command " << data.getName() << " to:\n"
+            << "1. " << ans[0] << std::endl
+            << "2. " << ans[1] << std::endl
+            << "3. " << ans[2] << std::endl
+            << "4. " << ans[3] << std::endl
+            << "5. Quit"       << std::endl
+            << "Select correct description: ";
+            std::cin >> choice;
+        }
         
+        if (choice != QUIT) {
+            player->points += 1; // add a point 
+            this->nextQuestion(player, pNode->getNextPtr(), questionsLeft - 1);
+        }
+    } else {
+        std::cout << "End of game, exiting..." << std::endl;
     }
 }
 

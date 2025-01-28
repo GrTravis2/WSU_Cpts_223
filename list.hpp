@@ -1,4 +1,5 @@
-
+#ifndef LIST_HPP
+#define LIST_HPP
 
 #include "node.hpp"
 
@@ -119,3 +120,5 @@ void list<T>::print() {
         pCurrent = pCurrent->getNextPtr();
     }
 }
+
+#endif
