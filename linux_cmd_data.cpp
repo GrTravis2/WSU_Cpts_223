@@ -20,10 +20,10 @@ linux_cmd_data::~linux_cmd_data() {
 }
 
 // getters
-std::string linux_cmd_data::getName() {
+std::string linux_cmd_data::getName() const {
     return this->mName;
 }
-std::string linux_cmd_data::getDescription() {
+std::string linux_cmd_data::getDescription() const {
     return this->mDescription;
 }
 
@@ -37,8 +37,12 @@ void linux_cmd_data::setDescription(std::string newDesc) {
 
 // overloaded operators
 
-bool operator==(linux_cmd_data& lhs, linux_cmd_data& rhs) {
+bool operator==(const linux_cmd_data& lhs, const linux_cmd_data& rhs) {
     return lhs.getName() == rhs.getName();
+}
+
+bool operator!=(const linux_cmd_data& lhs, const linux_cmd_data& rhs) {
+    return !(lhs.getName() == rhs.getName());
 }
 
 // writing data
@@ -55,7 +59,7 @@ std::istream& operator>>(std::istream& lhs, linux_cmd_data& rhs) {
 }
 
 // reading data
-std::ostream& operator<<(std::ostream& lhs, linux_cmd_data& rhs) {
+std::ostream& operator<<(std::ostream& lhs, const linux_cmd_data& rhs) {
     lhs << rhs.getName() << ", " << rhs.getDescription() << std::endl;
 
     return lhs;

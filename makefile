@@ -1,30 +1,22 @@
-COMPILER = g++
-FLAGS = -std=c++11
-COMPILE = $(COMPILER) $(FLAGS)
 
-main: main.o node.o list.o linux_cmd_data.o linux_cmds.o list_test.o
-	g++ -g main.o node.o list.o linux_cmd_data.o linux_cmds.o -o main
+main: linux_cmd_data.o linux_cmds.o list_test.o main.o
+	g++ -g linux_cmd_data.o linux_cmds.o list_test.o main.o -o main
 
 main.o: main.cpp
-	COMPILE -c -g -Wall main.cpp 
+	g++ -std=c++11 -c -g -Wall main.cpp 
 
-node.o: node.hpp
-	COMPILE -c -g -Wall node.hpp 
+linux_cmd_data.o: linux_cmd_data.cpp linux_cmd_data.hpp list.hpp
+	g++ -std=c++11 -c -g -Wall linux_cmd_data.cpp
 
-list.o: list.hpp
-	COMPILE -c -g -Wall list.hpp
+linux_cmds.o: linux_cmds.cpp linux_cmds.hpp node.hpp list.hpp linux_cmd_data.hpp
+	g++ -std=c++11 -c -g -Wall linux_cmds.cpp
 
-linux_cmd_data.o: linux_cmd_data.cpp
-	COMPILE -c -g -Wall linux_cmd_data.cpp
-
-linux_cmds.o: linux_cmds.cpp
-	COMPILE -c -g -Wall linux_cmds.cpp
-
-list_test.o: list_test.cpp
-	COMPILE -c -g -Wall list_test.cpp 
+list_test.o: list_test.cpp list.hpp node.hpp list_test.hpp
+	g++ -std=c++11 -c -g -Wall list_test.cpp 
 
 clean: 
 	-rm *.o
+	-rm *.gch
 
 run:
 	@./main

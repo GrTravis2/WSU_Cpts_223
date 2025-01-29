@@ -97,9 +97,9 @@ void linux_cmds::printLogo() {
 
 void linux_cmds::startNewGame() {
     bool ok = false;
-    std::string name;
-    int numQuestions;
-    player* newPlayer;
+    std::string name = "";
+    int numQuestions = -1;
+    player* newPlayer = nullptr;
 
     while (!ok) {
         std::cout << "Starting new game... please enter player name: ";
@@ -116,6 +116,10 @@ void linux_cmds::startNewGame() {
     }
 
     this->nextQuestion(newPlayer, this->mpHead, numQuestions);
+}
+
+void linux_cmds::loadPlayerData() {
+    //pass
 }
 
 player* linux_cmds::findPlayerData(std::string findName) {
@@ -197,5 +201,5 @@ void linux_cmds::removeCommand() {
 }
 
 void linux_cmds::saveData() {
-
+    //
 }

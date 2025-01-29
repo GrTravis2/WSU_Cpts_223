@@ -10,7 +10,7 @@ class node {
 
     public:
         // constructor
-        node(T& newData);
+        node(const T& newData);
 
         // destructor
         ~node();
@@ -20,13 +20,13 @@ class node {
         node* getNextPtr();
 
         //setters
-        bool setData(T& newData);
-        bool setNextPtr(node* newNextPtr);
+        void setData(T& newData);
+        void setNextPtr(node* newNextPtr);
 
 };
 
 template <class T>
-node<T>::node(T& newData) {
+node<T>::node(const T& newData) {
     this->mData = newData;
     this->pNext = nullptr;
 }
@@ -40,22 +40,22 @@ node<T>::~node() {
 // getters
 template <class T>
 T node<T>::getData() {
-    return this->mData
+    return this->mData;
 }
 
 template <class T>
 node<T>* node<T>::getNextPtr() {
-    return this->pNext
+    return this->pNext;
 }
 
 // setters
 template <class T>
-bool node<T>::setData(T& newData) {
+void node<T>::setData(T& newData) {
     this->mData = newData;
 }
 
 template <class T>
-bool node<T>::setNextPtr(node* newNextPtr) {
+void node<T>::setNextPtr(node* newNextPtr) {
     this->pNext = newNextPtr;
 }
 

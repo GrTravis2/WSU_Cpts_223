@@ -1,6 +1,8 @@
 #ifndef LIST_HPP
 #define LIST_HPP
 
+#include <iostream>
+
 #include "node.hpp"
 
 template <class T>
@@ -70,7 +72,7 @@ bool list<T>::insertAtFront(const T& newData) {
 
     }
 
-    return ok
+    return ok;
 }
 
 // -> returns nullptr if not found
@@ -94,7 +96,8 @@ bool list<T>::deleteNode(const T& data) {
 
     while (pCurrent != nullptr && pCurrent->getData() != data) {
         pPrev = pCurrent;
-        pCurrent = pCurrent->getNextPtr(); 
+        pCurrent = pCurrent->getNextPtr();
+
     }
 
     if (pCurrent != nullptr) { // data was found

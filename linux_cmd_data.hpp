@@ -21,8 +21,8 @@ class linux_cmd_data {
         ~linux_cmd_data();
 
         // getters
-        std::string getName();
-        std::string getDescription();
+        std::string getName() const;
+        std::string getDescription() const;
 
         // setters
         void setName(std::string newName); // deep copies!
@@ -34,13 +34,15 @@ class linux_cmd_data {
 
 // overloaded operators
 
-bool operator==(linux_cmd_data& lhs, linux_cmd_data& rhs);
+bool operator==(const linux_cmd_data& lhs, const linux_cmd_data& rhs);
+
+bool operator!=(const linux_cmd_data& lhs, const linux_cmd_data& rhs);
 
 // writing data
 std::istream& operator>>(std::istream& lhs, linux_cmd_data& rhs);
 
 // reading data
-std::ostream& operator<<(std::ostream& lhs, linux_cmd_data& rhs);
+std::ostream& operator<<(std::ostream& lhs, const linux_cmd_data& rhs);
 
 
 #endif
