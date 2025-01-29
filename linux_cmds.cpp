@@ -3,6 +3,7 @@
 // constructor
 linux_cmds::linux_cmds() : list() {
     this->mPlayers = new player[MAX_PLAYERS];
+    for (int i=0; i < MAX_PLAYERS; i++) { this->mPlayers[i] = {"", -1}; }
     this->currentPlayer = nullptr;
 }
 
@@ -19,7 +20,8 @@ void linux_cmds::run() {
 
     while (choice != EXIT) {
         this->printMenu();
-        std::cout << "Please insert option number: ";
+        std::cout << std::endl << "Please insert option number: ";
+        std::cin.clear();
         std::cin >> choice;
 
         switch (choice) {
@@ -67,7 +69,8 @@ void linux_cmds::printMenu() {
 void linux_cmds::printGameRules() {
     std::cout
     << "Select the correct description that matches the displayed linux command!\n"
-    << "The more questions you get correct, the higher your score." << std::endl;
+    << "The more questions you get correct, the higher your score." << std::endl
+    << std::endl;
 }
 
 void linux_cmds::printCommands() {
@@ -93,27 +96,28 @@ void linux_cmds::printLogo() {
     "o888    88     888      8888o   888   888    88      \n"
     "888    oooo   8  88     88 888o8 88   888ooo8        \n"
     "888o    88   8oooo88    88  888  88   888    oo      \n"
-    "888ooo888  o88o  o888o o88o  8  o88o o888ooo8888    \n";
+    "888ooo888  o88o  o888o o88o  8  o88o o888ooo8888    \n\n";
 }
 
 void linux_cmds::startNewGame() {
     bool ok = false;
     std::string name = "";
-    int numQuestions = -1;
+    int numQuestions = 3;
 
     while (!ok) {
         this->printPlayers();
-        std::cout << "Starting new game... please enter player name: ";
+        std::cout << std::endl << "Starting new game... please enter player name: ";
         std::cin >> name;
+        std::cout << std::endl;
         
         this->currentPlayer = this->findPlayerData(name);
-    }
         if (this->currentPlayer != nullptr) {
             std::cout << "please enter number of questions to answer: " << std::endl;
             std::cin >> numQuestions;
             if (numQuestions > 0) { ok = true; }
         } else {
             std::cout << "Player name not found, try again." << std::endl;
+        }
     }
 
     this->nextQuestion(this->mpHead, numQuestions);
@@ -137,10 +141,10 @@ void linux_cmds::loadPlayerData() {
 }
 
 void linux_cmds::printPlayers() {
-    player* pPlayer = nullptr;
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        pPlayer = this->mPlayers;
-        std::cout << pPlayer[i].name << std::endl;
+        if (this->mPlayers[i].name != "") {
+            std::cout << this->mPlayers[i].name << std::endl;
+        }
     }
 }
 
@@ -156,7 +160,7 @@ void linux_cmds::readFiles() {
         std::getline(f, s, '\n'); // read in points
         buffer.points = stoi(s);
 
-        this->mPlayers[i] = buffer;
+        this->mPlayers[i++] = buffer;
     }
     f.close();
 
@@ -204,15 +208,16 @@ void linux_cmds::nextQuestion(node<linux_cmd_data>* pNode, int questionsLeft) {
         for (int i = 0; i < 4; i++) {
             if(ans[i] == "") {
                 // make sure fake ans are unique before assignment
-                while (fake != ans[0] || fake != ans[1] || 
-                       fake != ans[2] || fake != ans[3]) {
+                fake = wrongAns[rand() % MAX_WRONG_ANS];
+                while (fake == ans[0] || fake == ans[1] || 
+                       fake == ans[2] || fake == ans[3]) {
                     fake = wrongAns[rand() % MAX_WRONG_ANS];
                 }
                 ans[i] = fake;
             }
         }
 
-        while (choice != correct && choice != QUIT) {
+        while (choice != correct + 1 && choice != QUIT) {
             std::cout 
             << "Use linux command " << data.getName() << " to:\n"
             << "1. " << ans[0] << std::endl
@@ -234,9 +239,21 @@ void linux_cmds::nextQuestion(node<linux_cmd_data>* pNode, int questionsLeft) {
 }
 
 void linux_cmds::addCommand() {
-    std::string newCmd;
+    std::string input;
     std::cout << "please input new command to add to the list: " << std::endl;
-    std::cin >> newCmd;
+    std::cin >> input;
+
+    linux_cmd_data cmd(input, "", 1);
+    if (this->findNode(cmd) == nullptr) {// check if cmd exists
+
+        std::cout << "please input what the command does: " << std::endl;
+        std::cin >> input;
+        cmd.setDescription(input);
+
+        this->insertAtFront(cmd);
+    } else {
+        std::cout << "entered command already exists, please try again." << std::endl;
+    }
 }
 
 void linux_cmds::removeCommand() {
@@ -247,7 +264,7 @@ void linux_cmds::removeCommand() {
 
     std::cout << std::endl << "Removing " << choice << " from list.";
 
-    if (this->deleteNode(linux_cmd_data(choice, ""))) {
+    if (this->deleteNode(linux_cmd_data(choice, "", 0))) {
         std::cout << choice << " has been removed from list." << std::endl;
     } else {
         std::cout << "Deletion unsuccessful. " << choice << " not found." << std::endl;
@@ -259,7 +276,11 @@ void linux_cmds::saveData() {
     f.open("players.csv");
 
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        f << this->mPlayers[i].name + std::to_string(this->mPlayers[i].points) << std::endl;
+        f << this->mPlayers[i].name + "," + std::to_string(this->mPlayers[i].points) << std::endl;
     }
     f.close();
+}
+
+void linux_cmds::test() {
+    //pass
 }

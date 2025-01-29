@@ -9,6 +9,8 @@ template <class T>
 class list {
     protected:
         node<T>* mpHead;
+    private:
+        void deleteList(node<T>* pNode);
 
     public:
 
@@ -43,7 +45,15 @@ list<T>::list() {
 // destructor
 template <class T>
 list<T>::~list() {
-    // nothing needed here :D
+    this->deleteList(this->mpHead);
+}
+
+template <class T>
+void list<T>::deleteList(node<T>* pNode) {
+    if (pNode != nullptr) {
+        this->deleteList(pNode->getNextPtr());
+        delete pNode;
+    }
 }
 
 // methods

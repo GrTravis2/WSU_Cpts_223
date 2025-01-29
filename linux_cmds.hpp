@@ -20,6 +20,7 @@ class linux_cmds : public list<linux_cmd_data> {
 
     private:
         player* mPlayers; // arr of player structs
+        player* currentPlayer;
 
         // helpers
         void printGameRules();
@@ -36,7 +37,10 @@ class linux_cmds : public list<linux_cmd_data> {
 
         std::string getOptions(std::string rightAns);
         player* findPlayerData(std::string name);
-        void nextQuestion(player* player, node<linux_cmd_data>* pNode, int questionsLeft);
+        void printPlayers();
+        void nextQuestion(node<linux_cmd_data>* pNode, int questionsLeft);
+
+        void test();
 
     public:
 

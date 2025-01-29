@@ -9,10 +9,12 @@ linux_cmd_data::linux_cmd_data() {
 
 linux_cmd_data::linux_cmd_data(
     const std::string& name,
-    const std::string& description) {
+    const std::string& description,
+    const int& points) {
 
         this->mName = name;
         this->mDescription = description;
+        this->mPoints = points;
 }
 
 // destructor
