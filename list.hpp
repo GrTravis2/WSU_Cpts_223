@@ -65,7 +65,7 @@ bool list<T>::insertAtFront(const T& newData) {
             // list is not empty, new node points to old head node
             // new node becomes new head node
             pNew->setNextPtr(this->mpHead);
-            this->mpHead->setNextPtr(pNew);
+            this->mpHead = pNew;
         }
 
         ok = true;
@@ -102,9 +102,15 @@ bool list<T>::deleteNode(const T& data) {
 
     if (pCurrent != nullptr) { // data was found
 
-        // previous node points to next node
-        pPrev->setNextPtr(pCurrent->getNextPtr());
-
+        // case: data found in first node
+        if (pPrev == nullptr) {
+            // 2nd node becomes new head
+            this->mpHead = pCurrent->getNextPtr();
+            // remove pCurrent which will be head node
+        } else {
+            // previous node points to next node
+            pPrev->setNextPtr(pCurrent->getNextPtr());
+        }
         // delete the node with the found data
         delete pCurrent;
         ok = true;

@@ -2,6 +2,8 @@
 #define LINUX_CMDS_HPP
 
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include "list.hpp"
 #include "linux_cmd_data.hpp"
@@ -18,7 +20,6 @@ class linux_cmds : public list<linux_cmd_data> {
 
     private:
         player* mPlayers; // arr of player structs
-        int numPlayers;
 
         // helpers
         void printGameRules();
@@ -30,6 +31,8 @@ class linux_cmds : public list<linux_cmd_data> {
         void addCommand();
         void removeCommand();
         void saveData();
+
+        void readFiles();
 
         std::string getOptions(std::string rightAns);
         player* findPlayerData(std::string name);

@@ -4,6 +4,7 @@
 linux_cmd_data::linux_cmd_data() {
     this->mName = "";
     this->mDescription = "";
+    this->mPoints = 0;
 }
 
 linux_cmd_data::linux_cmd_data(
@@ -26,6 +27,9 @@ std::string linux_cmd_data::getName() const {
 std::string linux_cmd_data::getDescription() const {
     return this->mDescription;
 }
+int linux_cmd_data::getPoints() const {
+    return this->mPoints;
+}
 
 // setters
 void linux_cmd_data::setName(std::string newName) {
@@ -33,6 +37,9 @@ void linux_cmd_data::setName(std::string newName) {
 }
 void linux_cmd_data::setDescription(std::string newDesc) {
     this->mDescription = newDesc;
+}
+void linux_cmd_data::setPoints(int newPoints) {
+    this->mPoints = newPoints;
 }
 
 // overloaded operators
@@ -52,15 +59,18 @@ std::istream& operator>>(std::istream& lhs, linux_cmd_data& rhs) {
     std::getline(lhs, s, ',');// -> s has cmd name
     rhs.setName(s);
 
-    std::getline(lhs, s, '\n');// -> s has cmd description
+    std::getline(lhs, s, ',');// -> s has cmd description
     rhs.setName(s);
 
+    std::getline(lhs, s, '\n');// -> s has cmd point value
+    rhs.setPoints(stoi(s));
+    
     return lhs;
 }
 
 // reading data
 std::ostream& operator<<(std::ostream& lhs, const linux_cmd_data& rhs) {
-    lhs << rhs.getName() << ", " << rhs.getDescription() << std::endl;
+    lhs << rhs.getName() << "," << rhs.getDescription() << "," << rhs.getPoints() << std::endl;
 
     return lhs;
 }

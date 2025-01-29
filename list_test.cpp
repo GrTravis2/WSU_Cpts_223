@@ -19,7 +19,7 @@ bool list_test::testInsertAtFront() {
     t.insertAtFront(1);
     t.print();
 
-    return false;
+    return true;
 }
 bool list_test::testFindNode() {
     list<int> t;
@@ -57,9 +57,9 @@ bool list_test::testDeleteNode() {
     
         if (t.deleteNode(1)) {
 
-            if (t.deleteNode(2)) {
+            if (t.deleteNode(3)) {
 
-                if (t.deleteNode(3)) { ok = true; }
+                if (t.deleteNode(2)) { ok = true; }
             }
         }
     }

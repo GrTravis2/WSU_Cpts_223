@@ -3,7 +3,7 @@
 // constructor
 linux_cmds::linux_cmds() : list() {
     this->mPlayers = new player[MAX_PLAYERS];
-    this->numPlayers = 0;
+    this->currentPlayer = nullptr;
 }
 
 // destructor
@@ -13,6 +13,7 @@ linux_cmds::~linux_cmds() {
 
 // app entry point
 void linux_cmds::run() {
+    this->readFiles();
     this->printLogo();
     int choice = -1;
 
@@ -99,15 +100,15 @@ void linux_cmds::startNewGame() {
     bool ok = false;
     std::string name = "";
     int numQuestions = -1;
-    player* newPlayer = nullptr;
 
     while (!ok) {
+        this->printPlayers();
         std::cout << "Starting new game... please enter player name: ";
         std::cin >> name;
         
-        newPlayer = this->findPlayerData(name);
-        }
-        if (newPlayer != nullptr) {
+        this->currentPlayer = this->findPlayerData(name);
+    }
+        if (this->currentPlayer != nullptr) {
             std::cout << "please enter number of questions to answer: " << std::endl;
             std::cin >> numQuestions;
             if (numQuestions > 0) { ok = true; }
@@ -115,17 +116,70 @@ void linux_cmds::startNewGame() {
             std::cout << "Player name not found, try again." << std::endl;
     }
 
-    this->nextQuestion(newPlayer, this->mpHead, numQuestions);
+    this->nextQuestion(this->mpHead, numQuestions);
 }
 
 void linux_cmds::loadPlayerData() {
-    //pass
+    std::string s;
+    this->printPlayers();
+    std::cout
+    << "enter player name from list to load player data: ";
+    std::cin >> s;
+
+    player* found = this->findPlayerData(s);
+    if (found != nullptr) {
+        std::cout << "loading data for " << found->name <<
+        " and they current have " << found->points << "cumulative points"
+        << std::endl;
+    } else {
+        std::cout << "The name " << s << " not found in list. Try again." << std::endl;
+    }
+}
+
+void linux_cmds::printPlayers() {
+    player* pPlayer = nullptr;
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        pPlayer = this->mPlayers;
+        std::cout << pPlayer[i].name << std::endl;
+    }
+}
+
+void linux_cmds::readFiles() {
+    std::ifstream f;
+    std::string s = "";
+    player buffer = {"", 0};
+    int i = 0;
+
+    f.open("players.csv");
+    while(f.peek() != EOF && i < MAX_PLAYERS) {
+        std::getline(f, buffer.name, ','); // read in player name
+        std::getline(f, s, '\n'); // read in points
+        buffer.points = stoi(s);
+
+        this->mPlayers[i] = buffer;
+    }
+    f.close();
+
+    linux_cmd_data cmd;
+
+    f.open("commands.csv");
+    while(f.peek() != EOF) {
+        std::getline(f, s, ',');// cmd name
+        cmd.setName(s);
+        std::getline(f, s, ',');// cmd description
+        cmd.setDescription(s);
+        std::getline(f, s, '\n');// cmd point value
+        cmd.setPoints(stoi(s));
+
+        this->insertAtFront(cmd);
+    }
+    f.close();
 }
 
 player* linux_cmds::findPlayerData(std::string findName) {
     player* found = nullptr;
 
-    for (int i = 0; i < this->numPlayers; i++) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
         found = &(this->mPlayers[i]);
         if (found->name == findName) { break; }
     }
@@ -134,7 +188,7 @@ player* linux_cmds::findPlayerData(std::string findName) {
 
     return found;
 }
-void linux_cmds::nextQuestion(player* player, node<linux_cmd_data>* pNode, int questionsLeft) {
+void linux_cmds::nextQuestion(node<linux_cmd_data>* pNode, int questionsLeft) {
     if (pNode != nullptr && questionsLeft > 0) {// check if end of list is hit
 
         // set up vars
@@ -171,8 +225,8 @@ void linux_cmds::nextQuestion(player* player, node<linux_cmd_data>* pNode, int q
         }
         
         if (choice != QUIT) {
-            player->points += 1; // add a point 
-            this->nextQuestion(player, pNode->getNextPtr(), questionsLeft - 1);
+            this->currentPlayer->points += 1; // add a point 
+            this->nextQuestion(pNode->getNextPtr(), questionsLeft - 1);
         }
     } else {
         std::cout << "End of game, exiting..." << std::endl;
@@ -201,5 +255,11 @@ void linux_cmds::removeCommand() {
 }
 
 void linux_cmds::saveData() {
-    //
+    std::ofstream f;
+    f.open("players.csv");
+
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        f << this->mPlayers[i].name + std::to_string(this->mPlayers[i].points) << std::endl;
+    }
+    f.close();
 }

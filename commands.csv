@@ -1,0 +1,30 @@
+pwd,"Print working directory",1
+ls,"List files and directories in current working directory",1
+cd,"Change current working directory",1
+mkdir,"Create a directory",1
+rmdir,"Delete a directory",1
+rm,"Delete a file",1
+cp,"Copy",1
+mv,"Move a file",1
+ssh,"Securely connect to a remote server",2
+scp,"Securely copy files between hosts",2
+man,"Open the manual for all linux commands",2
+g++,"Call the GNU compiler for c++",2
+gcc,"Call the GNU compiler for c",2
+make,"Call the make cli tool to run makefile",2
+ps,"Display running processes",2
+kill,"Terminate a process",2
+top,"Monitor a system process in real time",2
+who,"Show who is currently logged in",3
+chmod,"Change file permissions",3
+cat,"View the contents of a file",3
+alias,"Create a shortcut for a command/fine name",3
+chown,"Change file ownership",3
+df,"Show disk space usage",3
+grep,"Search for regex in text files or streams",3
+echo,"Display the value of an environment variable",2
+find,"Search for files and directories",4
+clear,"Clear the terminal screen",1
+diff,"Compare two files line by line",2
+env,"List all environment variables set in the system",4
+free,"Display memory usage information",3

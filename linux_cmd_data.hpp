@@ -10,6 +10,7 @@ class linux_cmd_data {
     private:
         std::string mName;
         std::string mDescription;
+        int mPoints;
 
     public:
 
@@ -23,10 +24,12 @@ class linux_cmd_data {
         // getters
         std::string getName() const;
         std::string getDescription() const;
+        int getPoints() const;
 
         // setters
         void setName(std::string newName); // deep copies!
         void setDescription(std::string newDesc);
+        void setPoints(int newPoints);
 
         
 
