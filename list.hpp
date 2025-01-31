@@ -28,6 +28,8 @@ class list {
         // returns nullptr if not found
         node<T>* findNode(const T& data);
 
+        // search by key value of data
+        // req overloaded 
         // returns true if data was found and deleted
         bool deleteNode(const T& data);
 
@@ -58,6 +60,7 @@ void list<T>::deleteList(node<T>* pNode) {
 
 // methods
 
+// allocates new node on the heap and inserts in list
 // -> true if data inserted successfully
 template <class T>
 bool list<T>::insertAtFront(const T& newData) {

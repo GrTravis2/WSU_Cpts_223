@@ -74,7 +74,7 @@ void linux_cmds::printGameRules() {
 }
 
 void linux_cmds::printCommands() {
-    std::cout << "Command, Description" << std::endl;
+    std::cout << "**Command, Description, Points**" << std::endl;
     this->print();
 }
 
@@ -242,6 +242,7 @@ void linux_cmds::addCommand() {
     std::string input;
     std::cout << "please input new command to add to the list: " << std::endl;
     std::cin >> input;
+    for (int i : input) { if (i == ' ') { i = '_';} }
 
     linux_cmd_data cmd(input, "", 1);
     if (this->findNode(cmd) == nullptr) {// check if cmd exists
@@ -279,8 +280,16 @@ void linux_cmds::saveData() {
         f << this->mPlayers[i].name + "," + std::to_string(this->mPlayers[i].points) << std::endl;
     }
     f.close();
-}
 
-void linux_cmds::test() {
-    //pass
+    f.open("commands.csv");
+    node<linux_cmd_data>* pCurrent = this->mpHead;
+    linux_cmd_data copy;
+    while (pCurrent != nullptr) {
+        copy = pCurrent->getData();
+        f << copy.getName() + "," + copy.getDescription() + "," + std::to_string(copy.getPoints()) << std::endl;
+        pCurrent = pCurrent->getNextPtr();
+    }
+    f.close();
+
+
 }
