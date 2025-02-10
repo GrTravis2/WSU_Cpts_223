@@ -1,6 +1,8 @@
 #ifndef MY_JOSEPHUS
 #define MY_JOSEPHUS
 
+#include <string>
+
 class MyJosephus {
     protected:
         int M; // step move, where M lands that destination is removed from collection
@@ -13,9 +15,16 @@ class MyJosephus {
         // destructor -> must override!
         virtual ~MyJosephus() = 0;
 
+        // public methods
+        void run(); // start game, go until one destination
+        std::string& getRow(const int& index); // get ith row from file
+
         // public abstract methods
-        virtual void clear() = 0;
-        virtual int getCurrentSize() = 0;
+        virtual void clear() = 0; // -> empty the sequence
+        virtual int getCurrentSize() = 0; // -> return collection size
+        virtual bool isEmpty() = 0; // -> true if collection is empty
+        virtual void eliminateDestination() = 0; // -> step and remove destination
+        virtual void printAllDestinations() = 0; // -> print collection contents
 };
 
 

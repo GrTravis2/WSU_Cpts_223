@@ -13,7 +13,7 @@ class ListMyJosephus : public MyJosephus {
     public:
 
     // constructor
-    ListMyJosephus(const int& M, const int& N) : MyJosephus(M, N);
+    ListMyJosephus(const int& M, const int& N);
 
     // destructor
     ~ListMyJosephus();
