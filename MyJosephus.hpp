@@ -2,22 +2,27 @@
 #define MY_JOSEPHUS
 
 #include <string>
+#include <fstream>
+
+#define DESTINATION_ROW_MAX 25
+const std::string file = "destinations.csv";
 
 class MyJosephus {
     protected:
         int M; // step move, where M lands that destination is removed from collection
         int N; // number of destinations read in from data
 
+        std::ifstream mFile; // track file for reading in data
+
     public:
         // constructor
         MyJosephus(const int& M, const int& N);
 
         // destructor -> must override!
-        virtual ~MyJosephus() = 0;
+        ~MyJosephus();
 
         // public methods
         void run(); // start game, go until one destination
-        std::string& getRow(const int& index); // get ith row from file
 
         // public abstract methods
         virtual void clear() = 0; // -> empty the sequence
