@@ -21,15 +21,14 @@ class MyJosephus {
         // destructor -> must override!
         ~MyJosephus();
 
-        // public methods
-        void run(); // start game, go until one destination
-
         // public abstract methods
+        virtual void run() = 0; // start game, go until one destination
         virtual void clear() = 0; // -> empty the sequence
         virtual int getCurrentSize() = 0; // -> return collection size
         virtual bool isEmpty() = 0; // -> true if collection is empty
         virtual void eliminateDestination() = 0; // -> step and remove destination
         virtual void printAllDestinations() = 0; // -> print collection contents
+        virtual bool contains(const int& pos) = 0; // -> true if contains position
 };
 
 

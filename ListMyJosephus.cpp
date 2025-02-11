@@ -24,6 +24,22 @@ ListMyJosephus::~ListMyJosephus() {
     //nothing to do here, handled in ~MyJosephus :)
 }
 
+// public methods
+void ListMyJosephus::run() { // start game, go until one destination
+    std::cout << "**START SIM**\n";
+    this->printAllDestinations(); // just for debug
+    while (this->getCurrentSize() > 1) {
+        std::cout << "**elim start**\n";
+        this->eliminateDestination();
+        this->printAllDestinations(); // just for debug
+        std::cout << "**elim end**\n";
+    }
+    std::cout << " the last destination remaining: ";
+    this->printAllDestinations();
+
+    std::cout << "  **END SIM**\n";
+}
+
 // public abstract methods
 void ListMyJosephus::clear() { // -> empty the sequence
     this->mDestinations.clear();
@@ -43,15 +59,30 @@ void ListMyJosephus::eliminateDestination() { // -> step and remove destination
 
     // step M nodes, wrapping back to front of collection if needed
     for (int i = 0; i < this->M; i++) {
-        if (iter == end) { iter = this->mDestinations.begin(); } // loop back
+        if (++iter == end) { iter = this->mDestinations.begin(); } // loop back
     }
 
     // remove the element, returning iter to next element
     // which will be saved as index for next elim cycle
+    std::cout << "deleting destination " << *iter;
     iter = this->mDestinations.erase(iter);
+    if (iter == this->mDestinations.end()) { 
+        iter = this->mDestinations.begin(); // wrap if needed
+    }
     this->mIndex = iter->getPosition();
 }
 
 void ListMyJosephus::printAllDestinations() { // -> print collection contents
     for (auto d : this->mDestinations) { std::cout << d; } //print data op<<
+}
+
+bool ListMyJosephus::contains(const int& pos) { // true if contains position
+    bool ok = false;
+    for (auto d : this->mDestinations) {
+        if(d.getPosition() == pos) {
+            ok = true;
+            break;
+        }
+    }
+    return ok;
 }

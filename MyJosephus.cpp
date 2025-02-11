@@ -25,8 +25,3 @@ MyJosephus::~MyJosephus() {
     // M and N will be deleted by stack
     this->mFile.close();
 }
-
-// public methods
-void MyJosephus::run() { // start game, go until one destination
-    //do nothing for now... might have to move into derived classes...
-}
