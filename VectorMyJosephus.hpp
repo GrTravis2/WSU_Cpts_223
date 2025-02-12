@@ -2,6 +2,7 @@
 #define VECTOR_MY_JOSEPHUS
 
 #include <vector>
+#include <exception>
 
 #include "Destination.hpp"
 #include "MyJosephus.hpp"

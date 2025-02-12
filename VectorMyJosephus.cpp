@@ -63,7 +63,7 @@ void VectorMyJosephus::eliminateDestination() { // -> step and remove destinatio
     iter = this->mDestinations.erase(iter);
 
     if (this->mIndex + 1 > this->mDestinations.size()) {
-        this->mIndex = this->mIndex - this->mDestinations.size();
+        this->mIndex = this->mIndex % this->mDestinations.size();
     }
     
 }
