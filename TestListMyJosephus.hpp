@@ -7,6 +7,7 @@
 
 #include "ListMyJosephus.hpp"
 
+#define MAX_N 1025
 
 class TestListMyJosephus {
     private:

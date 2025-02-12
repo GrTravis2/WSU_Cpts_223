@@ -7,8 +7,6 @@
 #include "Destination.hpp"
 #include "MyJosephus.hpp"
 
-#define MAX_N 1025
-
 class ListMyJosephus : public MyJosephus {
     private:
     std::list<Destination> mDestinations;
