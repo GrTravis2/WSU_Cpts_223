@@ -26,18 +26,14 @@ ListMyJosephus::~ListMyJosephus() {
 
 // public methods
 void ListMyJosephus::run() { // start game, go until one destination
-    std::cout << "**START SIM**\n";
-    this->printAllDestinations(); // just for debug
+    std::cout << "**START M = " << this->M << ", N = " << this->N <<  "**\n";
     while (this->getCurrentSize() > 1) {
-        std::cout << "**elim start**\n";
         this->eliminateDestination();
-        this->printAllDestinations(); // just for debug
-        std::cout << "**elim end**\n";
     }
     std::cout << " the last destination remaining: ";
     this->printAllDestinations();
 
-    std::cout << "  **END SIM**\n";
+    std::cout << "**END**\n";
 }
 
 // public abstract methods
@@ -64,7 +60,7 @@ void ListMyJosephus::eliminateDestination() { // -> step and remove destination
 
     // remove the element, returning iter to next element
     // which will be saved as index for next elim cycle
-    std::cout << "deleting destination " << *iter;
+    // std::cout << "deleting destination " << *iter;
     iter = this->mDestinations.erase(iter);
     if (iter == this->mDestinations.end()) { 
         iter = this->mDestinations.begin(); // wrap if needed

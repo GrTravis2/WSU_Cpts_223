@@ -4,7 +4,7 @@
 int main(void) {
 
     TestListMyJosephus t;
-    t.testExample();
+    t.runSimulation();
 
     return 0;
 }

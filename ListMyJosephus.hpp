@@ -7,6 +7,8 @@
 #include "Destination.hpp"
 #include "MyJosephus.hpp"
 
+#define MAX_N 1025
+
 class ListMyJosephus : public MyJosephus {
     private:
     std::list<Destination> mDestinations;
@@ -27,7 +29,7 @@ class ListMyJosephus : public MyJosephus {
     bool isEmpty(); // -> true if collection is empty
     void eliminateDestination(); // -> step and remove destination
     void printAllDestinations(); // -> print collection contents
-    bool contains(const int& pos); // true if contains position
+    bool contains(const int& pos); // -> true if contains position
     
 
 };
