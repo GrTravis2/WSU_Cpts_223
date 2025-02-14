@@ -11,7 +11,7 @@ int main(void) {
     TestVectorMyJosephus t1;
     t1.testExample();
 
-    //t.runSimulation();
+    t.runSimulation();
     t1.runSimulation();
 
 

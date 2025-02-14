@@ -11,18 +11,24 @@ void TestVectorMyJosephus::runSimulation() {
         std::srand(time(0));
         int M = -1;
 
-        //  **PUT ME BACK IN THE FOR LOOP**
         for (int N = 1; N < MAX_N + 1; N++) {
             M = std::rand() % N;
+            int* elimSequence = nullptr;
+            
             // time stamp start -> simulate Josephus -> time stamp end -> write line
             start = clock();
-            VectorMyJosephus(M, N).run();
+            elimSequence = VectorMyJosephus(M, N).run();
             end = clock();
             elapsedTimes[N-1] = (float)(end - start)/CLOCKS_PER_SEC;
             results << "input " 
                     << "M=" << M
                     << ", N=" << N
-                    << " finished with elapsed time: " << elapsedTimes[N-1] << "\n";
+                    << " finished with elapsed time: " << elapsedTimes[N-1]
+                    << ", elimination sequence: "; 
+            // output elim sequence + end line
+            for (int i = 0; i < N - 1; i++) { results << elimSequence[i] << ", ";}
+            results << "\n";
+            delete elimSequence;
         }
 
         // compute average for all elapsed times
@@ -56,4 +62,7 @@ void TestVectorMyJosephus::testExample() {
 
     // final -> one destination remaining -> should be 3
     assert(t.getCurrentSize() == 1 && t.contains(3));
+
+    //VectorMyJosephus t2(16, 21);
+    //t2.run();
 }

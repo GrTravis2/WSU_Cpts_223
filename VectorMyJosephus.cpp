@@ -6,9 +6,11 @@ VectorMyJosephus::VectorMyJosephus(const int& M, const int& N) : MyJosephus(M, N
     // I'm assuming MyJosephus constructor is called first so going to
     // directly load in data to list... may come back to bite me :-)
     // assumptions: mFile is on the **start** of a random row in data file
+    
 
     if (this->mFile.is_open()) { // -> make sure file is still accessible
         std::string name = ""; // buffer!
+        this->mDestinations.reserve(N);
 
         for (int i = 0; i < this->N; i++) {
             std::getline(this->mFile, name, ';');
@@ -24,15 +26,18 @@ VectorMyJosephus::~VectorMyJosephus() {
 }
 
 // public methods
-void VectorMyJosephus::run() { // start game, go until one destination
+int* VectorMyJosephus::run() { // start game, go until one destination
     std::cout << "**START M = " << this->M << ", N = " << this->N <<  "**\n";
-    while (this->getCurrentSize() > 1) {
-        this->eliminateDestination();
+    int* p = new int[this->N-1];
+    for (int i = 0; i < this->N - 1; i++) {
+        p[i] = this->eliminateDestination();
     }
     std::cout << " the last destination remaining: ";
     this->printAllDestinations();
 
     std::cout << "**END**\n";
+
+    return p;
 }
 
 // public abstract methods
@@ -48,23 +53,26 @@ bool VectorMyJosephus::isEmpty() { // -> true if collection is empty
     return this->mDestinations.empty();
 }
 
-void VectorMyJosephus::eliminateDestination() { // -> step and remove destination
-    int diff = (this->mIndex + 1 + this->M) - this->mDestinations.size();
-    auto start = this->mDestinations.begin();
+int VectorMyJosephus::eliminateDestination() { // -> step and remove destination
+   auto iter = this->mDestinations.begin(); // set up data for elim
+   int shift = this->M % this->mDestinations.size();
+   int deletedPos = -1;
 
-    //while (diff > this->mDestinations.size()) { diff -= this->mDestinations.size(); }
-    // wrap if needed || put me back -> start + diff - 1
-    auto iter = (diff > 0) ? 
-    start + (diff % this->mDestinations.size()) - 1 : start + mIndex + M;
-    
-    // delete vec element and reassign new index (have to call begin() in case
-    // old begin() happens to be the one that got erased
-    this->mIndex = distance(this->mDestinations.begin(), iter);
+    // find the next node to be delete
+   int remainder = distance(iter + this->mIndex, this->mDestinations.end());
+   /* if (shift < remainder) {
+        iter = iter + this->mIndex + shift;
+   } else {
+        iter = iter + (shift - remainder);
+   } */
+    iter = (shift < remainder)? iter + this->mIndex + shift : iter + (shift-remainder);
+
+    deletedPos = iter->getPosition();
     iter = this->mDestinations.erase(iter);
+    this->mIndex = distance(this->mDestinations.begin(), iter);
+    if (this->mIndex > this->mDestinations.size() - 1) { this->mIndex = 0; }
 
-    if (this->mIndex + 1 > this->mDestinations.size()) {
-        this->mIndex = this->mIndex % this->mDestinations.size();
-    }
+    return deletedPos;
     
 }
 

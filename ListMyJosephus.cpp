@@ -25,15 +25,18 @@ ListMyJosephus::~ListMyJosephus() {
 }
 
 // public methods
-void ListMyJosephus::run() { // start game, go until one destination
+int* ListMyJosephus::run() { // start game, go until one destination
     std::cout << "**START M = " << this->M << ", N = " << this->N <<  "**\n";
-    while (this->getCurrentSize() > 1) {
-        this->eliminateDestination();
+    int* p = new int[this->N-1];
+    for (int i = 0; i < this->N - 1; i++) {
+        p[i] = this->eliminateDestination();
     }
     std::cout << " the last destination remaining: ";
     this->printAllDestinations();
 
     std::cout << "**END**\n";
+
+    return p;
 }
 
 // public abstract methods
@@ -46,7 +49,7 @@ int ListMyJosephus::getCurrentSize() { // -> return collection size
 bool ListMyJosephus::isEmpty() { // -> true if collection is empty
     return this->mDestinations.empty();
 }
-void ListMyJosephus::eliminateDestination() { // -> step and remove destination
+int ListMyJosephus::eliminateDestination() { // -> step and remove destination
 
     auto iter = this->mDestinations.begin(); // create iter for list and move to
     auto end = this->mDestinations.end();    // current index position before elim
@@ -60,12 +63,14 @@ void ListMyJosephus::eliminateDestination() { // -> step and remove destination
 
     // remove the element, returning iter to next element
     // which will be saved as index for next elim cycle
-    // std::cout << "deleting destination " << *iter;
+    int deletedPos = iter->getPosition();
     iter = this->mDestinations.erase(iter);
     if (iter == this->mDestinations.end()) { 
         iter = this->mDestinations.begin(); // wrap if needed
     }
     this->mIndex = iter->getPosition();
+
+    return deletedPos;
 }
 
 void ListMyJosephus::printAllDestinations() { // -> print collection contents

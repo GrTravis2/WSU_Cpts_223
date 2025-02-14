@@ -21,11 +21,11 @@ class ListMyJosephus : public MyJosephus {
     ~ListMyJosephus();
 
     // public abstract methods
-    void run(); // start game, go until one destination
+    int* run(); // start game, go until one destination
     void clear(); // -> empty the sequence
     int getCurrentSize(); // -> return collection size
     bool isEmpty(); // -> true if collection is empty
-    void eliminateDestination(); // -> step and remove destination
+    int eliminateDestination(); // -> step and remove destination
     void printAllDestinations(); // -> print collection contents
     bool contains(const int& pos); // -> true if contains position
     
