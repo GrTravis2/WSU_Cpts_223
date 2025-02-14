@@ -14,7 +14,7 @@ void TestVectorMyJosephus::runSimulation() {
         for (int N = 1; N < MAX_N + 1; N++) {
             M = std::rand() % N;
             int* elimSequence = nullptr;
-            
+
             // time stamp start -> simulate Josephus -> time stamp end -> write line
             start = clock();
             elimSequence = VectorMyJosephus(M, N).run();
@@ -63,6 +63,7 @@ void TestVectorMyJosephus::testExample() {
     // final -> one destination remaining -> should be 3
     assert(t.getCurrentSize() == 1 && t.contains(3));
 
+    // evil test case
     //VectorMyJosephus t2(16, 21);
     //t2.run();
 }

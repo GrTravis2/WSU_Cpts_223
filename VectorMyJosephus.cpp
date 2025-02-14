@@ -59,12 +59,7 @@ int VectorMyJosephus::eliminateDestination() { // -> step and remove destination
    int deletedPos = -1;
 
     // find the next node to be delete
-   int remainder = distance(iter + this->mIndex, this->mDestinations.end());
-   /* if (shift < remainder) {
-        iter = iter + this->mIndex + shift;
-   } else {
-        iter = iter + (shift - remainder);
-   } */
+    int remainder = distance(iter + this->mIndex, this->mDestinations.end());
     iter = (shift < remainder)? iter + this->mIndex + shift : iter + (shift-remainder);
 
     deletedPos = iter->getPosition();

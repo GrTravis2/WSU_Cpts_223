@@ -21,9 +21,6 @@ std::string Destination::getName() {
 }
 
 // public methods
-//void Destination::printPosition() {}
-
-//void Destination::printDestinationName() {}
 
 // in place of print position and print name
 std::ostream& operator<<(std::ostream& lhs, Destination& rhs) {
