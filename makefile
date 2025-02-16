@@ -1,12 +1,18 @@
 
-main: Destination.o ListMyJosephus.o VectorMyJosephus.o main.o
-	g++ -g linux_cmd_data.o linux_cmds.o list_test.o main.o -o PA2
+main: main.o
+	g++ -g main.o -o PA2
 
-main.o: main.cpp
+main.o: TestListMyJosephus.o TestVectorMyJosephus.o
 	g++ -std=c++11 -c -g -Wall main.cpp 
 
 Destination.o: Destination.hpp
 	g++ -std=c++11 -c -g -Wall Destination.cpp
+
+TestListMyJosephus.o: ListMyJosephus.o TestListMyJosephus.hpp
+	g++ -std=c++11 -c -g -Wall TestListMyJosephus.cpp
+
+TestVectorMyJosephus.o: VectorMyJosephus.o TestVectorMyJosephus.hpp
+	g++ -std=c++11 -c -g -Wall TestVectorMyJosephus.cpp
 
 ListMyJosephus.o: Destination.o MyJosephus.o ListMyJosephus.hpp
 	g++ -std=c++11 -c -g -Wall ListMyJosephus.cpp
