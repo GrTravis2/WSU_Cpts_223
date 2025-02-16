@@ -1,6 +1,6 @@
 
 main: main.o
-	g++ -g main.o -o PA2
+	g++ -g Destination.o MyJosephus.o ListMyJosephus.o  VectorMyJosephus.o TestListMyJosephus.o TestVectorMyJosephus.o main.o -o PA2
 
 main.o: TestListMyJosephus.o TestVectorMyJosephus.o
 	g++ -std=c++11 -c -g -Wall main.cpp 
