@@ -22,7 +22,15 @@ std::string Destination::getName() {
 
 // public methods
 
-// in place of print position and print name
+// printing data individually
+void Destination::printPosition() {
+    std::cout << this->mPosition;
+}
+void Destination::printDestinationName() {
+    std::cout << this->mName;
+}
+
+// print destination data as a pair
 std::ostream& operator<<(std::ostream& lhs, Destination& rhs) {
     lhs << rhs.mPosition << ", " << rhs.mName << "\n";
 

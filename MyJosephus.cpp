@@ -20,7 +20,7 @@ MyJosephus::MyJosephus(const int& M, const int& N) {
     }
 }
 
-// destructor -> must override!
+// destructor
 MyJosephus::~MyJosephus() {
     // M and N will be deleted by stack
     this->mFile.close();

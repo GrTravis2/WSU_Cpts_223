@@ -18,7 +18,7 @@ class MyJosephus {
         // constructor
         MyJosephus(const int& M, const int& N);
 
-        // destructor -> must override!
+        // destructor
         ~MyJosephus();
 
         // public abstract methods

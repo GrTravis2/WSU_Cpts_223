@@ -10,6 +10,7 @@ ListMyJosephus::ListMyJosephus(const int& M, const int& N) : MyJosephus(M, N) {
     if (this->mFile.is_open()) { // -> make sure file is still accessible
         std::string name = ""; // buffer!
 
+        // load the data into the collection
         for (int i = 0; i < this->N; i++) {
             std::getline(this->mFile, name, ';');
             this->mDestinations.push_back(Destination(i, name));
@@ -27,6 +28,8 @@ ListMyJosephus::~ListMyJosephus() {
 // public methods
 int* ListMyJosephus::run() { // start game, go until one destination
     std::cout << "**START M = " << this->M << ", N = " << this->N <<  "**\n";
+
+    // remove elements and save in array of removed positions
     int* p = new int[this->N-1];
     for (int i = 0; i < this->N - 1; i++) {
         p[i] = this->eliminateDestination();
@@ -36,7 +39,7 @@ int* ListMyJosephus::run() { // start game, go until one destination
 
     std::cout << "**END**\n";
 
-    return p;
+    return p; // return sequence of ints on the heap -> delete later!
 }
 
 // public abstract methods

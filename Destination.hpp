@@ -23,10 +23,8 @@ class Destination {
         std::string getName();
 
         // public methods
-        // Doing this with a getter and std::cout instead,
-        // I think its easier to read when print comes from top level
-        // void printPosition(); 
-        // void printDestinationName();
+        void printPosition(); 
+        void printDestinationName();
 
         friend std::ostream& operator<<(std::ostream& lhs, Destination& rhs);
 

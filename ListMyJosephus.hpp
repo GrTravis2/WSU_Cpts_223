@@ -9,7 +9,7 @@
 
 class ListMyJosephus : public MyJosephus {
     private:
-    std::list<Destination> mDestinations;
+    std::list<Destination> mDestinations; // collection of destinations
     int mIndex; // track current start position of elim loop!
 
     public:
@@ -21,9 +21,9 @@ class ListMyJosephus : public MyJosephus {
     ~ListMyJosephus();
 
     // public abstract methods
-    int* run(); // start game and go until one destination,
+    int* run(); // -> start game and run until one destination,
                 // return sequence of deleted destinations
-                
+
     void clear(); // -> empty the sequence
     int getCurrentSize(); // -> return collection size
     bool isEmpty(); // -> true if collection is empty

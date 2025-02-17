@@ -6,7 +6,7 @@ void TestListMyJosephus::runSimulation() {
     // set up log file writing and check its open
     std::ofstream results("ListResults.log");
     if (results.is_open()) {// -> start sim!
-        float elapsedTimes[MAX_N];
+        float elapsedTimes[MAX_N]; // -> ready variables
         clock_t start, end;
         std::srand(time(0));
         int M = -1;
@@ -28,7 +28,7 @@ void TestListMyJosephus::runSimulation() {
             // output elim sequence + end line
             for (int i = 0; i < N - 1; i++) { results << elimSequence[i] << ", ";}
             results << "\n";
-            delete elimSequence;
+            delete elimSequence; // -> make sure to delete int[] on the heap!
         }
 
         // compute average for all elapsed times

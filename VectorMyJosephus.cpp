@@ -12,6 +12,7 @@ VectorMyJosephus::VectorMyJosephus(const int& M, const int& N) : MyJosephus(M, N
         std::string name = ""; // buffer!
         this->mDestinations.reserve(N);
 
+        // load the data into the collection
         for (int i = 0; i < this->N; i++) {
             std::getline(this->mFile, name, ';');
             this->mDestinations.push_back(Destination(i, name));
@@ -28,6 +29,8 @@ VectorMyJosephus::~VectorMyJosephus() {
 // public methods
 int* VectorMyJosephus::run() { // start game, go until one destination
     std::cout << "**START M = " << this->M << ", N = " << this->N <<  "**\n";
+
+    // remove elements and save in array of removed positions
     int* p = new int[this->N-1];
     for (int i = 0; i < this->N - 1; i++) {
         p[i] = this->eliminateDestination();
@@ -37,7 +40,7 @@ int* VectorMyJosephus::run() { // start game, go until one destination
 
     std::cout << "**END**\n";
 
-    return p;
+    return p; // return sequence of ints on the heap -> delete later!
 }
 
 // public abstract methods
@@ -62,23 +65,27 @@ int VectorMyJosephus::eliminateDestination() { // -> step and remove destination
     int remainder = distance(iter + this->mIndex, this->mDestinations.end());
     iter = (shift < remainder)? iter + this->mIndex + shift : iter + (shift-remainder);
 
+    // record deleted position and current index before removing destination
     deletedPos = iter->getPosition();
     iter = this->mDestinations.erase(iter);
     this->mIndex = distance(this->mDestinations.begin(), iter);
-    if (this->mIndex > this->mDestinations.size() - 1) { this->mIndex = 0; }
+    if (this->mIndex > this->mDestinations.size() - 1) { this->mIndex = 0; } // -> check if deletion moves iter oob!
 
     return deletedPos;
     
 }
 
 void VectorMyJosephus::printAllDestinations() { // -> print collection contents
-    for (auto d : this->mDestinations) { std::cout << d; }
+    for (auto d : this->mDestinations) { std::cout << d; } //print data op<<
 }
 
 bool VectorMyJosephus::contains(const int& pos) { // -> true if contains position
     bool ok = false;
     for (auto d : this->mDestinations) {
-        if (d.getPosition() == pos) { ok = true; }
+        if (d.getPosition() == pos) {
+            ok = true;
+            break;
+        }
     }
 
     return ok;
