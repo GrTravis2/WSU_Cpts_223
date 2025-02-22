@@ -1,6 +1,8 @@
 #ifndef AVL_NODE_H
 #define AVL_NODE_H
 
+#include <iostream>
+
 template <class K, class V>
 class avl_node {
 
@@ -40,6 +42,9 @@ class avl_node {
     friend bool operator<(const avl_node<K, V>& lhs, const avl_node<K, V>& rhs);
     friend bool operator>(const avl_node<K, V>& lhs, const avl_node<K, V>& rhs);
     friend bool operator!=(const avl_node<K, V>& lhs, const avl_node<K, V>& rhs);
+
+    // classes K and V must have these operators overloaded!
+    friend std::ostream& operator<<(std::ostream& lhs, const avl_node<K, V>& rhs);
 
 };
 
@@ -107,6 +112,16 @@ bool operator>(const avl_node<K, V>& lhs, const avl_node<K, V>& rhs) {
 template <class K, class V>
 bool operator!=(const avl_node<K, V>& lhs, const avl_node<K, V>& rhs) {
     return lhs.mKey != rhs.mKey;
+}
+
+template <class K, class V>
+std::ostream& operator<<(std::ostream& lhs, const avl_node<K, V>& rhs) {
+    lhs << 
+    "key : " << rhs.mKey << 
+    " BF : " << rhs.mBalanceFactor <<
+    " data : " << rhs.mData << std::endl;
+
+    return lhs;
 }
 
 #endif
