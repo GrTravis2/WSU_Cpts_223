@@ -1,5 +1,5 @@
 main: main.o
-	g++ -g main.o -o MA2
+	g++ -std=c++11-g main.o -o MA2
 
 main.o: BST.h
 	g++ -std=c++11 -c -g -Wall main.cpp
