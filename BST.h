@@ -154,18 +154,24 @@ protected:
 		out << " ** Doing this with a loop will be easier than recursion." << endl;
 		out << " ** Your code MUST print to 'out' not 'cout' to work - see printInOrder()." << endl; */
 
-		std::queue<T> q; // for holding data before printing to out
-		Node<T>* pCurrent, pLeft, pRight;
-		pCurrent = root;
+		std::queue<Node<T>*> q; // for holding data before printing to out
+		Node<T>* pCurrent = nullptr; // accessing values
 
-		while (pCurrent != nullptr) {
-			
+		if (root != nullptr) {
+			q.push(root);
+			while (!q.empty()) { // load q with root and process until we find the ends of all nodes!
+
+				pCurrent = q.front(); // read and print front node to out
+				out << pCurrent->getValue() << ' ';
+				if (pCurrent->left != nullptr){ q.push(pCurrent->left); } // add left node, then right to q
+				if (pCurrent->right != nullptr){ q.push(pCurrent->right); }
+
+				q.pop(); // remove front node before repeating cycle
+			}
+		} else {
+			std::cout << "nothing to print in level order" << std::endl;
 		}
-
-		q.push(root->getValue());
-		root->nodeCount()
-
-
+		//out << std::endl;
 	}
 
 	/* Return number of nodes in tree */
@@ -288,7 +294,7 @@ public:
 			cout << " [d] Copy constructor called. " << endl;
 		}
 		//cout << " TODO: Implement copy constructor. " << endl;
-		this->cloneTree(other);
+		this->_root = this->cloneTree(other._root);
 	}
 
 	/* Move constructor */
@@ -309,7 +315,7 @@ public:
 			cout << " [d] Copy assignment operator called. " << endl;
 		}
 		//cout << " TODO: Implement copy assignment operator. " << endl;
-		this->cloneTree(other);
+		this->_root = this->cloneTree(other._root);
 		return *this;
 	}
 
