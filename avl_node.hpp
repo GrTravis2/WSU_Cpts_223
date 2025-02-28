@@ -18,7 +18,7 @@ class avl_node {
     public:
 
     // constructor
-    avl_node(const K& key, const V& data, avl_node<K, V>* left, avl_node<K, V>* right);
+    avl_node(const K& key, const V& data);
 
     // destructor
     ~avl_node();
@@ -52,11 +52,12 @@ class avl_node {
 template <class K, class V>
 avl_node<K, V>::avl_node(
     const K& key, 
-    const V& data, 
-    avl_node<K, V>* left, 
-    avl_node<K, V>* right) : 
-    mpLeft(left),
-    mpRight(right),
+    const V& data
+    ) : 
+    mKey(key),
+    mData(data),
+    mpLeft(nullptr),
+    mpRight(nullptr),
     mBalanceFactor(-1) {};
 
 // destructor
