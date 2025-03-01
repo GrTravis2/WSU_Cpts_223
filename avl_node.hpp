@@ -72,7 +72,7 @@ avl_node<K, V>* avl_node<K, V>::getLeftPtr() {
 
 template <class K, class V>
 avl_node<K, V>* avl_node<K, V>::getRightPtr() {
-    return this->mpRight
+    return this->mpRight;
 }
 
 template <class K, class V>

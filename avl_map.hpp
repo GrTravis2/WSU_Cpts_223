@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <queue>
 
 #include "avl_node.hpp"
 
@@ -27,7 +28,7 @@ class avl_map {
             Iterator(avl_node<K, V>*& nodePtr); // basic init
 
             // destructor
-            ~Iterator() {} // do nothing
+            ~Iterator(); // do nothing
 
             // public methods
             bool hasNext(const K& key); // returns true if iterator should continue
@@ -76,6 +77,7 @@ class avl_map {
     bool empty(); // -> returns true if tree is empty
     void insert(const K& key, const V& value); // -> insert element and balance if needed
     void erase(const K& key); // -> remove element by key and balance if needed
+    bool equals(const K* keys, const int& size); // -> compare keys and breadth first order against array of keys -> helpful for tests!
 
     avl_map<K, V>::Iterator begin(); // -> get iterator starting at root of the tree
     avl_map<K, V>::Iterator find(const K& key); // -> find element in the tree by key, return iterator
@@ -166,10 +168,10 @@ int getMaxHeightHelper(avl_node<K, V>* pTree, int level) {
     if (pTree != nullptr) { // in order traversal -> returns node level if not nullptr!
         left = getMaxHeightHelper(pTree->getLeftPtr(), level + 1);
         right = getMaxHeightHelper(pTree->getRightPtr(), level + 1);
-        current = level
+        current = level;
     }
 
-    return std::max(left, right, current); // max guarantees that levels 0 or greater are returned
+    return std::max({left, right, current}); // max guarantees that levels 0 or greater are returned
 }
 
 // public methods
@@ -290,6 +292,7 @@ void avl_map<K, V>::rotate(avl_node<K, V>* pParent, avl_node<K, V>* pChild, ROTA
             pParent->setRightPtr(pChild->getRightPtr());
             pChild->setRightPtr(pParent->getRightPtr()->getLeftPtr());
             pParent->getRightPtr()->setLeftPtr(pChild);
+
             break;
         case RR: // -> left rotation!
             pParent->setRightPtr(pChild->getRightPtr());
@@ -307,13 +310,37 @@ void avl_map<K, V>::erase(const K& key) {
 }
 
 template <class K, class V>
-avl_map<K, V>::Iterator avl_map<K, V>::begin() {
+typename avl_map<K, V>::Iterator avl_map<K, V>::begin() {
     return avl_map<K, V>::Iterator(this->mpRoot);
+}
+
+// compare keys and breadth first order against array of keys
+template <class K, class V>
+bool avl_map<K, V>::equals(const K* keys, const int& size) { 
+    std::queue<avl_node<K, V>*> q;
+    avl_node<K, V>* pCurrent = nullptr;
+    int i = 0;
+    bool ok = false;
+
+    q.push(this->mpRoot);
+
+    while (!q.empty() && i < size) {
+        pCurrent = q.front(); // pull out front node and compare key against expected key
+        if (pCurrent->mKey != keys[i++]) { break; }
+
+        if (pCurrent->getLeftPtr() != nullptr) { q.push(pCurrent->getLeftPtr()); }   // enqueue left, then right
+        if (pCurrent->getRightPtr() != nullptr) { q.push(pCurrent->getRightPtr()); } // for BFS search
+
+        q.pop(); // delete node pCurrent is pointing to
+    }
+    if (q.empty() && i == size) { ok = true; } // if we compared the whole tree and array then true
+
+    return ok;
 }
 
 // returns iter pointing to found node or nullptr if not found!
 template <class K, class V>
-avl_map<K, V>::Iterator avl_map<K, V>::find(const K& key) {
+typename avl_map<K, V>::Iterator avl_map<K, V>::find(const K& key) {
     avl_map<K, V>::Iterator iter = this->begin();
     while (iter.hasNext(key)) { iter.next(key); }
 
