@@ -1,5 +1,6 @@
 
 #include "avl_test.hpp"
+#include "avl_map.hpp"
 
 // run all tests
 void avl_test::runTests() {
@@ -8,7 +9,7 @@ void avl_test::runTests() {
     testEquals();
     testEmpty();
     testInsert();
-    testErase();
+    //testErase();
     testFind();
 
     // testing private methods
@@ -18,9 +19,6 @@ void avl_test::runTests() {
 // testing private methods
 void avl_test::testIter() {
     avl_map<int, int> t;
-    auto iter = t.begin();
-    assert(iter.getKey() == 25); // root node has value 25 and two children
-    assert(iter.hasNext(LEFT) && iter.hasNext(RIGHT));
 
     t.insert(25, 0); // set up tree for traversal
     assert(t.equals((const int[]){25}, 1));
@@ -33,18 +31,26 @@ void avl_test::testIter() {
     t.insert(45, 0);
     assert(t.equals((const int[]){25, 15, 35, 5, 45}, 5));
 
+    auto iter = t.begin();
+    assert(iter.getKey() == 25); // root node has value 25 and two children
+    assert(iter.hasNext(LEFT) && iter.hasNext(RIGHT));
+
     // check move left works and hasNext finds correct dead ends
     iter.next(LEFT);
-    assert(iter.getKey() == 15 && iter.hasNext(LEFT) && !iter.hasNext(RIGHT));
+    assert(iter.getKey() == 15 && iter.hasNext(LEFT) && iter.hasNext(RIGHT));
     iter.next(LEFT);
-    assert(iter.getKey() == 5 && !iter.hasNext(LEFT) && !iter.hasNext(RIGHT));
+    assert(iter.getKey() == 5 && iter.hasNext(LEFT) && iter.hasNext(RIGHT));
+    iter.next(LEFT);
+    assert(!iter.hasNext(LEFT) && !iter.hasNext(RIGHT));
 
     auto iterRight = t.begin();
     // check move right works and hasNext finds correct dead ends
     iterRight.next(RIGHT);
-    assert(iterRight.getKey() == 35 && !iterRight.hasNext(LEFT) && iterRight.hasNext(RIGHT));
+    assert(iterRight.getKey() == 35 && iterRight.hasNext(LEFT) && iterRight.hasNext(RIGHT));
     iterRight.next(RIGHT);
-    assert(iterRight.getKey() == 45 && !iterRight.hasNext(LEFT) && !iterRight.hasNext(RIGHT));
+    assert(iterRight.getKey() == 45 && iterRight.hasNext(LEFT));
+    iterRight.next(RIGHT);
+    assert(!iterRight.hasNext(LEFT) && !iterRight.hasNext(RIGHT));
 
     auto iterFound = t.begin();
 
@@ -159,12 +165,115 @@ void avl_test::testInsert() {
     t.insert(44, 0);
     assert(t.equals((const int[]){25, 15, 44, 5, 35, 45}, 6));
     t.clear();
+
+    // test case for csv file load
+    t.insert(601, 0); // -> test RL case
+    assert(t.equals((const int[]){601}, 1));
+    t.insert(602, 0);
+    assert(t.equals((const int[]){601, 602}, 2));
+    t.insert(603, 0);
+    assert(t.equals((const int[]){602, 601, 603}, 3));
+    t.insert(606, 0);
+    assert(t.equals((const int[]){602, 601, 603, 606}, 4));
+    t.insert(610, 0);
+    assert(t.equals((const int[]){602, 601, 606, 603, 610}, 5));
+    t.insert(611, 0);
+    assert(t.equals((const int[]){606, 602, 610, 601, 603, 611}, 6));
+    t.insert(612, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612}, 7));
+    t.insert(616, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612, 616}, 8));
+    t.insert(617, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 616, 612, 617}, 9));
+    t.insert(622, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 617, 610, 612, 622}, 10));
+    t.insert(623, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 622, 610, 612, 617, 623}, 11));
+    t.insert(624, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 623, 601, 603, 610, 612, 624}, 12));
+    t.insert(627, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 624, 601, 603, 610, 612, 623, 627}, 13));
+    t.insert(631, 0);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
+    
+    t.clear();
 }
 void avl_test::testErase() {
+    avl_map<int, int> t;
 
+    // create a tree with known shape
+    t.insert(601, 0);
+    assert(t.equals((const int[]){601}, 1));
+    t.insert(602, 0);
+    assert(t.equals((const int[]){601, 602}, 2));
+    t.insert(603, 0);
+    assert(t.equals((const int[]){602, 601, 603}, 3));
+    t.insert(606, 0);
+    assert(t.equals((const int[]){602, 601, 603, 606}, 4));
+    t.insert(610, 0);
+    assert(t.equals((const int[]){602, 601, 606, 603, 610}, 5));
+    t.insert(611, 0);
+    assert(t.equals((const int[]){606, 602, 610, 601, 603, 611}, 6));
+    t.insert(612, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612}, 7));
+    t.insert(616, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612, 616}, 8));
+    t.insert(617, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 616, 612, 617}, 9));
+    t.insert(622, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 617, 610, 612, 622}, 10));
+    t.insert(623, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 622, 610, 612, 617, 623}, 11));
+    t.insert(624, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 623, 601, 603, 610, 612, 624}, 12));
+    t.insert(627, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 624, 601, 603, 610, 612, 623, 627}, 13));
+    t.insert(631, 0);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
 }
 void avl_test::testFind() {
+    avl_map<int, int> t;
 
+    // create a tree with known shape
+    t.insert(601, 0);
+    assert(t.equals((const int[]){601}, 1));
+    t.insert(602, 0);
+    assert(t.equals((const int[]){601, 602}, 2));
+    t.insert(603, 0);
+    assert(t.equals((const int[]){602, 601, 603}, 3));
+    t.insert(606, 0);
+    assert(t.equals((const int[]){602, 601, 603, 606}, 4));
+    t.insert(610, 0);
+    assert(t.equals((const int[]){602, 601, 606, 603, 610}, 5));
+    t.insert(611, 0);
+    assert(t.equals((const int[]){606, 602, 610, 601, 603, 611}, 6));
+    t.insert(612, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612}, 7));
+    t.insert(616, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612, 616}, 8));
+    t.insert(617, 0);
+    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 616, 612, 617}, 9));
+    t.insert(622, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 617, 610, 612, 622}, 10));
+    t.insert(623, 0);
+    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 622, 610, 612, 617, 623}, 11));
+    t.insert(624, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 623, 601, 603, 610, 612, 624}, 12));
+    t.insert(627, 0);
+    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 624, 601, 603, 610, 612, 623, 627}, 13));
+    t.insert(631, 0);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
+
+    assert(t.find(616).getKey() == 616); // -> find root
+    assert(t.find(601).getKey() == 601); // check 4 corners
+    assert(t.find(612).getKey() == 612);
+    assert(t.find(617).getKey() == 617);
+    assert(t.find(631).getKey() == 631);
+
+    // check case where key is not found, iter should be
+    // at a dead end and found bit should be false
+    auto iter = t.find(-1);
+    assert(!iter.hasNext(-1) && !iter.hasFound());
 }
 
 void avl_test::testEquals() {

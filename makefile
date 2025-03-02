@@ -1,8 +1,17 @@
 main: main.o
-	g++ -std=c++11 -g main.o -o PA3
+	g++ -std=c++11 -g USCity.o tree_comparison.o main.o -o PA3
 
-main.o: BST.h
+main.o: avl_test.cpp tree_comparison.o
 	g++ -std=c++11 -c -g -Wall main.cpp
+
+avl_test.o: avl_map.hpp avl_node.hpp
+	g++ -std=c++11 -c -g -Wall avl_test.cpp
+
+tree_comparison.o: tree_comparison.hpp tree_comparison.cpp USCity.o
+	g++ -std=c++11 -c -g -Wall tree_comparison.cpp
+
+USCity.o: USCity.cpp USCity.hpp
+	g++ -std=c++11 -c -g -Wall USCity.cpp
 
 clean:
 	-rm *.o

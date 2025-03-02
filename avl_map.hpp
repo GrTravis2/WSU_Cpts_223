@@ -20,13 +20,13 @@ class avl_map {
     class Iterator {
 
         private:
-            avl_node<K, V>*& pNode;
+            avl_node<K, V>* pNode;
             bool mFound;
 
         public:
 
             // constructor
-            Iterator(avl_node<K, V>*& nodePtr); // basic init
+            Iterator(avl_node<K, V>* nodePtr); // basic init
 
             // destructor
             ~Iterator(); // do nothing
@@ -34,28 +34,12 @@ class avl_map {
             // getters
             K& getKey() const;
             V& getValue() const;
+            bool hasFound() const;
 
             // public methods
             bool hasNext(const K& key); // returns true if iterator should continue
             void next(const K& key); // go to next level in tree based on key value
-
-
-            /*
-            // get next iterator, return nullptr if key not found
-            void next(const K& key) {
-
-                // check for leaf node -> if dead end stop recursive calls
-                if (this->pNode != nullptr) {
-                    // continue recursive call if key is not a match
-                    if (this->pNode->mKey != key) { 
-                        if (this->pNode->mKey < key) { // -> if key is less than node key go left
-                            this->pNode = this->pNode->getLeftPtr();
-                        } else {
-                            this->pNode = this->pNode->getRightPtr(); // -> else go right
-                        }
-                    }
-                }
-            } */
+            
 
     };
 
@@ -98,7 +82,7 @@ class avl_map {
 
 // constructor
 template <class K, class V>
-avl_map<K, V>::Iterator::Iterator(avl_node<K, V>*& nodePtr) : pNode(nodePtr), mFound(false)  {};
+avl_map<K, V>::Iterator::Iterator(avl_node<K, V>* nodePtr) : pNode(nodePtr), mFound(false)  {};
 
 // destructor
 template <class K, class V>
@@ -115,20 +99,31 @@ V& avl_map<K, V>::Iterator::getValue() const {
     return pNode->getValue();
 }
 
+template <class K, class V>
+bool avl_map<K, V>::Iterator::hasFound() const {
+    return this->mFound;
+}
+
 // public methods
 
 // returns true if iterator can continue searching for next value
 // returns false if iterator hits a leaf node or finds the key, if key is found iter mFound data member set to true
 template <class K, class V>
 bool avl_map<K, V>::Iterator::hasNext(const K& key) {
-    bool ok = false;
-    if (key < this->pNode->mKey) { // -> go left if less
-        ok = (this->pNode->getLeftPtr() != nullptr);
-    } else if (key > this->pNode->mKey) { // -> go right if greater
-        ok = (this->pNode->getRightPtr() != nullptr);
-    } else {
-        this->mFound = true; // if the key is not less than or greater than, then it must be a match
-    }
+    /*bool ok = false;
+
+    if (pNode != nullptr) {
+
+        if (key < this->pNode->getKey()) { // -> go left if less
+            ok = (this->pNode->getLeftPtr() != nullptr);
+        } else if (key > this->pNode->getKey()) { // -> go right if greater
+            ok = (this->pNode->getRightPtr() != nullptr);
+        } else {
+            this->mFound = true; // if the key is not less than or greater than, then it must be a match
+        }
+    }*/
+
+    bool ok = (pNode != nullptr && pNode->getKey() != key) ? true : false;
 
     return ok;
 }
@@ -136,7 +131,7 @@ bool avl_map<K, V>::Iterator::hasNext(const K& key) {
 // go down next level based on key values, need to check if next can continue with hasNext()
 template <class K, class V>
 void avl_map<K, V>::Iterator::next(const K& key) {
-    if (this->pNode->mKey < key) { // -> if key is less than node key go left
+    if (key < this->pNode->getKey()) { // -> if key is less than node key go left
         this->pNode = this->pNode->getLeftPtr();
     } else {
         this->pNode = this->pNode->getRightPtr(); // -> else go right
@@ -266,23 +261,29 @@ bool avl_map<K, V>::insertHelper(const K& key, const V& value, avl_node<K, V>* p
 template <class K, class V>
 void avl_map<K, V>::balanceHelper(avl_node<K, V>* pParent, avl_node<K, V>* pChild) {
     ROTATE r;
+    avl_node<K, V>* pNext = nullptr;
 
     // if balance helper is called then pChild is unbalanced -> check for rotation cases
     if (pChild->getBalanceFactor() < -1) { // subtree is left heavy
 
         // if left subtree is left heavy LL case else LR case
-        r = (pChild->getLeftPtr()->getBalanceFactor() < 0) ? LL : LR;
+        pNext = pChild->getLeftPtr();
+        r = (pNext != nullptr && pNext->getBalanceFactor() < 0) ? LL : LR;
 
     } else { // subtree must be right heavy
 
         // if right subtree is left heavy RL case else RR case
-        r = (pChild->getRightPtr()->getBalanceFactor() < 0) ? RL : RR;
+        pNext = pChild->getRightPtr();
+        r = (pNext != nullptr && pNext->getBalanceFactor() < 0) ? RL : RR;
     }
     if (pChild == this-> mpRoot) { 
         this->rotateRoot(mpRoot, r); 
     } else {
         this->rotate(pParent, pChild, r);
     }
+
+    pChild->setBalanceFactor(this->getMaxHeight(pChild->getRightPtr()) - this->getMaxHeight(pChild->getLeftPtr()));
+    //pParent->setBalanceFactor((this->getMaxHeight(pParent)));
     
 }
 
@@ -331,6 +332,8 @@ void avl_map<K, V>::rotate(avl_node<K, V>* pParent, avl_node<K, V>* pChild, ROTA
         default:
             assert(false); // if you get here I want to know how
     }
+
+
 }
 
 template <class K, class V>
@@ -442,8 +445,8 @@ bool avl_map<K, V>::eraseHelper(avl_node<K, V>* pTree, const K& key) {
                 } else {
                     buffer->setRightPtr(nullptr);
                 }
-                buffer = pNext.
-                pNode.se
+                //buffer = pNext.
+                //pNode.se
             }
         }
 

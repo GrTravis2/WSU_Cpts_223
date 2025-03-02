@@ -60,7 +60,8 @@ avl_node<K, V>::avl_node(
     mData(data),
     mpLeft(nullptr),
     mpRight(nullptr),
-    mBalanceFactor(-1) {};
+    mBalanceFactor(0) {};
+
 
 // destructor
 template <class K, class V>

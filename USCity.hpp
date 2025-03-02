@@ -33,6 +33,9 @@ class USCity {
         const std::string& timezone
     );
 
+    // assignment operator
+    
+
     // destructor
     ~USCity();
 

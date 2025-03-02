@@ -9,7 +9,10 @@
                 "-fansi-escape-codes",
                 "-std=c++11",
                 "-g",
-                "*.cpp",
+                "avl_test.cpp",
+                "USCity.cpp",
+                "tree_comparison.cpp",
+                "main.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
