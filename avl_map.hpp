@@ -4,6 +4,7 @@
 #include <iostream>
 #include <assert.h>
 #include <queue>
+#include <array>
 
 #include "avl_node.hpp"
 
@@ -30,9 +31,14 @@ class avl_map {
             // destructor
             ~Iterator(); // do nothing
 
+            // getters
+            K& getKey() const;
+            V& getValue() const;
+
             // public methods
             bool hasNext(const K& key); // returns true if iterator should continue
             void next(const K& key); // go to next level in tree based on key value
+
 
             /*
             // get next iterator, return nullptr if key not found
@@ -63,6 +69,8 @@ class avl_map {
     bool insertHelper(const K& key, const V& value, avl_node<K, V>* pTree);
     void balanceHelper(avl_node<K, V>* pParent, avl_node<K, V>* pChild);
     void rotate(avl_node<K, V>* pParent, avl_node<K, V>* pChild, ROTATE r);
+    void rotateRoot(avl_node<K, V>* pChild, ROTATE r);
+    bool eraseHelper(avl_node<K, V>* pTree, const K& key);
     avl_map<K, V>::Iterator findHelper(avl_node<K, V>* pTree, const K& key);
 
     public:
@@ -78,6 +86,7 @@ class avl_map {
     void insert(const K& key, const V& value); // -> insert element and balance if needed
     void erase(const K& key); // -> remove element by key and balance if needed
     bool equals(const K* keys, const int& size); // -> compare keys and breadth first order against array of keys -> helpful for tests!
+    void clear(); // -> clear contents of tree
 
     avl_map<K, V>::Iterator begin(); // -> get iterator starting at root of the tree
     avl_map<K, V>::Iterator find(const K& key); // -> find element in the tree by key, return iterator
@@ -94,6 +103,17 @@ avl_map<K, V>::Iterator::Iterator(avl_node<K, V>*& nodePtr) : pNode(nodePtr), mF
 // destructor
 template <class K, class V>
 avl_map<K, V>::Iterator::~Iterator() {} // do nothing
+
+// getters
+template <class K, class V>
+K& avl_map<K, V>::Iterator::getKey() const {
+    return pNode->getKey();
+}
+
+template <class K, class V>
+V& avl_map<K, V>::Iterator::getValue() const {
+    return pNode->getValue();
+}
 
 // public methods
 
@@ -147,21 +167,15 @@ bool avl_map<K, V>::empty() {
 template <class K, class V>
 void avl_map<K, V>::deleteTreeHelper(avl_node<K, V>* pTree) {
     if (pTree != nullptr) {
-        this->deleteTreeHelper(pTree->mpLeft);
-        this->deleteTreeHelper(pTree->mpRight);
+        this->deleteTreeHelper(pTree->getLeftPtr());
+        this->deleteTreeHelper(pTree->getRightPtr());
         delete pTree;
     }
 }
 
-// get height of sub-tree pTree, returns -1 if sub-tree is empty
-template <class K, class V>
-int avl_map<K, V>::getMaxHeight(avl_node<K, V>* pTree) {
-    return getMaxHeightHelper(pTree, 0);
-}
-
 // helper method to hide int paramater
 template <class K, class V>
-int getMaxHeightHelper(avl_node<K, V>* pTree, int level) {
+int avl_map<K, V>::getMaxHeightHelper(avl_node<K, V>* pTree, int level) {
     int left = -1; // set default values, overwrite if node/subtree is valid
     int right = -1;
     int current = -1;
@@ -174,6 +188,12 @@ int getMaxHeightHelper(avl_node<K, V>* pTree, int level) {
     return std::max({left, right, current}); // max guarantees that levels 0 or greater are returned
 }
 
+// get height of sub-tree pTree, returns -1 if sub-tree is empty
+template <class K, class V>
+int avl_map<K, V>::getMaxHeight(avl_node<K, V>* pTree) {
+    return getMaxHeightHelper(pTree, 0);
+}
+
 // public methods
 template <class K, class V>
 void avl_map<K, V>::insert(const K& key, const V& value) {
@@ -184,6 +204,11 @@ void avl_map<K, V>::insert(const K& key, const V& value) {
         
         this->insertHelper(key, value, this->mpRoot);
     }
+    // after insert check if mpRoot needs balancing since insert only checks subtree balance
+    if (mpRoot != nullptr && std::abs(mpRoot->getBalanceFactor()) > 1) {
+        this->balanceHelper(mpRoot, mpRoot);
+    }
+
 }
 
 template <class K, class V>
@@ -191,9 +216,9 @@ bool avl_map<K, V>::insertHelper(const K& key, const V& value, avl_node<K, V>* p
     bool success = false;
     if (pTree != nullptr) { // check for dead end
 
-        if (pTree->mKey != key) { // check for duplicates
+        if (pTree->getKey() != key) { // check for duplicates
 
-            if (key < pTree->mKey) { // check if traverse should go left
+            if (key < pTree->getKey()) { // check if traverse should go left
 
                 if (pTree->getLeftPtr() == nullptr) { // insert here if pTree is a leaf node
                     avl_node<K, V>* pNew = new avl_node<K, V>(key, value);
@@ -253,8 +278,12 @@ void avl_map<K, V>::balanceHelper(avl_node<K, V>* pParent, avl_node<K, V>* pChil
         // if right subtree is left heavy RL case else RR case
         r = (pChild->getRightPtr()->getBalanceFactor() < 0) ? RL : RR;
     }
-
-    this->rotate(pParent, pChild, r);
+    if (pChild == this-> mpRoot) { 
+        this->rotateRoot(mpRoot, r); 
+    } else {
+        this->rotate(pParent, pChild, r);
+    }
+    
 }
 
 template <class K, class V>
@@ -305,8 +334,122 @@ void avl_map<K, V>::rotate(avl_node<K, V>* pParent, avl_node<K, V>* pChild, ROTA
 }
 
 template <class K, class V>
-void avl_map<K, V>::erase(const K& key) {
+void avl_map<K, V>::rotateRoot(avl_node<K, V>* pChild, ROTATE r) {
     
+    avl_node<K, V>* buffer = nullptr;
+
+    switch (r) {
+        case LL: // -> do right rotation
+            mpRoot = pChild->getLeftPtr();
+            pChild->setLeftPtr(mpRoot->getRightPtr());
+            mpRoot->setRightPtr(pChild);
+            break;
+        case LR:
+            // rotate to get LL case then rotate again to balance
+            buffer = pChild->getLeftPtr()->getRightPtr();
+            pChild->getLeftPtr()->setRightPtr(buffer->getLeftPtr());
+            buffer->setLeftPtr(pChild->getLeftPtr());
+            pChild->setLeftPtr(buffer);
+
+            // do a right rotation
+            mpRoot = pChild->getLeftPtr();
+            pChild->setLeftPtr(mpRoot->getRightPtr());
+            mpRoot->setRightPtr(pChild);
+
+            break;
+        case RL:
+            // rotate to get LL case then rotate again to balance
+            buffer = pChild->getRightPtr()->getLeftPtr();
+            pChild->getRightPtr()->setLeftPtr(buffer->getRightPtr());
+            buffer->setRightPtr(pChild->getRightPtr());
+            pChild->setRightPtr(buffer);
+
+            // do a left rotation
+            mpRoot = pChild->getRightPtr();
+            pChild->setRightPtr(mpRoot->getLeftPtr());
+            mpRoot->setLeftPtr(pChild);
+
+            break;
+        case RR: // -> left rotation!
+            mpRoot = pChild->getRightPtr();
+            pChild->setRightPtr(mpRoot->getLeftPtr());
+            mpRoot->setLeftPtr(pChild);
+            break;
+        default:
+            assert(false); // if you get here I want to know how
+    }
+}
+
+template <class K, class V>
+void avl_map<K, V>::erase(const K& key) {
+
+    if (mpRoot->getKey() == key) {
+        // key match at the root node! -> special case!
+        // set the rightmost node of the left subtree as new root
+        // to guarantee ordering is still valid
+        avl_node<K, V>* pNode = mpRoot->getLeftPtr();
+        avl_node<K, V>* buffer = mpRoot;
+
+        // step until pNode is the rightmost node of the left subtree
+        // and buffer points at the node above pNode
+        while (pNode->getRightPtr() != nullptr) {
+            buffer = pNode;
+            pNode = pNode->getRightPtr();
+        }
+        buffer->setRightPtr(nullptr); // cut pNode from tree and point buffer back at root
+        buffer = mpRoot;
+
+        // insert pNode in place of old root, update root, and then delete old root
+        pNode->setLeftPtr(mpRoot->getLeftPtr());
+        pNode->setRightPtr(mpRoot->getRightPtr());
+        mpRoot = pNode;
+        delete buffer;
+
+    } else {
+        this->eraseHelper(mpRoot, key);
+    }
+    
+}
+
+template <class K, class V>
+bool avl_map<K, V>::eraseHelper(avl_node<K, V>* pTree, const K& key) {
+
+    bool success = false;
+    
+    if (pTree != nullptr) { // check for dead end
+
+        bool left = (pTree->getKey() < key)? true : false;
+        avl_node<K, V>* pNext = (left) ? pTree->getLeftPtr() : pTree->getRightPtr();
+
+        if (pNext->getKey() != key) { // key not found, search another level
+            
+            success = this->eraseHelper(pNext, key);
+
+        } else { // key found!
+            avl_node<K, V>* pNode = nullptr;
+            avl_node<K, V>* buffer = pNext;
+            if (left) {
+                pNode = pNext->getRightPtr(); // start in left subtree of node to be deleted
+
+                // advance until pNode is at rightmost leaf node and buffer is above it
+                while (pNode->getRightPtr() != nullptr) {
+                    buffer = pNode;
+                    pNode = pNode->getRightPtr();
+                }
+
+                if (buffer == pNext) {
+                    buffer->setLeftPtr(pNode->getLeftPtr());
+                } else {
+                    buffer->setRightPtr(nullptr);
+                }
+                buffer = pNext.
+                pNode.se
+            }
+        }
+
+    }
+
+    return success;
 }
 
 template <class K, class V>
@@ -314,7 +457,7 @@ typename avl_map<K, V>::Iterator avl_map<K, V>::begin() {
     return avl_map<K, V>::Iterator(this->mpRoot);
 }
 
-// compare keys and breadth first order against array of keys
+// compare keys in breadth first order against array of keys
 template <class K, class V>
 bool avl_map<K, V>::equals(const K* keys, const int& size) { 
     std::queue<avl_node<K, V>*> q;
@@ -326,7 +469,7 @@ bool avl_map<K, V>::equals(const K* keys, const int& size) {
 
     while (!q.empty() && i < size) {
         pCurrent = q.front(); // pull out front node and compare key against expected key
-        if (pCurrent->mKey != keys[i++]) { break; }
+        if (pCurrent->getKey() != keys[i++]) { break; }
 
         if (pCurrent->getLeftPtr() != nullptr) { q.push(pCurrent->getLeftPtr()); }   // enqueue left, then right
         if (pCurrent->getRightPtr() != nullptr) { q.push(pCurrent->getRightPtr()); } // for BFS search
@@ -338,10 +481,18 @@ bool avl_map<K, V>::equals(const K* keys, const int& size) {
     return ok;
 }
 
+template <class K, class V>
+void avl_map<K, V>::clear() {
+    this->deleteTreeHelper(mpRoot);
+    this->mpRoot = nullptr;
+}
+
 // returns iter pointing to found node or nullptr if not found!
 template <class K, class V>
 typename avl_map<K, V>::Iterator avl_map<K, V>::find(const K& key) {
     avl_map<K, V>::Iterator iter = this->begin();
+
+    // advance iter, will stop at nullptr or if key is found
     while (iter.hasNext(key)) { iter.next(key); }
 
     return iter;

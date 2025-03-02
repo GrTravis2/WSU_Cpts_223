@@ -1,6 +1,7 @@
 #ifndef AVL_TEST_H
 #define AVL_TEST_H
 
+#include "avl_node.hpp"
 #include "avl_map.hpp"
 
 #define LEFT -1 * std::numeric_limits<int>::infinity() // for stepping iter left and right in testing
@@ -12,17 +13,15 @@ class avl_test {
     // no data members
 
     // testing private methods
-    void testNext();
-    void testHasNext();
+    void testIter();
     void testGetMaxHeight();
-    void testBalance();
-    void testRotate();
 
     // testing public methods
     void testEmpty();
     void testInsert();
     void testErase();
     void testFind();
+    void testEquals();
 
     public:
     void runTests();

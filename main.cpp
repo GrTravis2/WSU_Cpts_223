@@ -3,8 +3,7 @@
 
 int main(void) {
 
-    avl_test t;
-    t.runTests();
+    avl_test().runTests();
 
     return 0;
 }

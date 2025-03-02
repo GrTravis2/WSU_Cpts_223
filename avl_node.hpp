@@ -27,6 +27,8 @@ class avl_node {
     avl_node<K, V>* getLeftPtr();
     avl_node<K, V>* getRightPtr();
     int getBalanceFactor();
+    K& getKey();
+    V& getValue();
 
     // setters
     void setLeftPtr(avl_node<K, V>* newLeftPtr);
@@ -78,6 +80,16 @@ avl_node<K, V>* avl_node<K, V>::getRightPtr() {
 template <class K, class V>
 int avl_node<K, V>::getBalanceFactor() {
     return this->mBalanceFactor;
+}
+
+template <class K, class V>
+K& avl_node<K, V>::getKey() {
+    return this->mKey;
+}
+
+template <class K, class V>
+V& avl_node<K, V>::getValue() {
+    return this->mData;
 }
 
 // setters
