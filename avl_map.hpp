@@ -1,6 +1,7 @@
 #ifndef AVL_MAP_H
 #define AVL_MAP_H
 
+#include <__config>
 #include <iostream>
 #include <assert.h>
 #include <queue>
@@ -110,18 +111,6 @@ bool avl_map<K, V>::Iterator::hasFound() const {
 // returns false if iterator hits a leaf node or finds the key, if key is found iter mFound data member set to true
 template <class K, class V>
 bool avl_map<K, V>::Iterator::hasNext(const K& key) {
-    /*bool ok = false;
-
-    if (pNode != nullptr) {
-
-        if (key < this->pNode->getKey()) { // -> go left if less
-            ok = (this->pNode->getLeftPtr() != nullptr);
-        } else if (key > this->pNode->getKey()) { // -> go right if greater
-            ok = (this->pNode->getRightPtr() != nullptr);
-        } else {
-            this->mFound = true; // if the key is not less than or greater than, then it must be a match
-        }
-    }*/
 
     bool ok = (pNode != nullptr && pNode->getKey() != key) ? true : false;
 
@@ -283,7 +272,6 @@ void avl_map<K, V>::balanceHelper(avl_node<K, V>* pParent, avl_node<K, V>* pChil
     }
 
     pChild->setBalanceFactor(this->getMaxHeight(pChild->getRightPtr()) - this->getMaxHeight(pChild->getLeftPtr()));
-    //pParent->setBalanceFactor((this->getMaxHeight(pParent)));
     
 }
 
@@ -332,8 +320,6 @@ void avl_map<K, V>::rotate(avl_node<K, V>* pParent, avl_node<K, V>* pChild, ROTA
         default:
             assert(false); // if you get here I want to know how
     }
-
-
 }
 
 template <class K, class V>
@@ -387,7 +373,7 @@ template <class K, class V>
 void avl_map<K, V>::erase(const K& key) {
 
     if (mpRoot->getKey() == key) {
-        // key match at the root node! -> special case!
+        // key match at the root node!
         // set the rightmost node of the left subtree as new root
         // to guarantee ordering is still valid
         avl_node<K, V>* pNode = mpRoot->getLeftPtr();
@@ -395,12 +381,19 @@ void avl_map<K, V>::erase(const K& key) {
 
         // step until pNode is the rightmost node of the left subtree
         // and buffer points at the node above pNode
-        while (pNode->getRightPtr() != nullptr) {
+        while (pNode != nullptr && pNode->getRightPtr() != nullptr) {
             buffer = pNode;
             pNode = pNode->getRightPtr();
         }
-        buffer->setRightPtr(nullptr); // cut pNode from tree and point buffer back at root
-        buffer = mpRoot;
+        // cut pNode from tree and point buffer back at root
+        if (buffer == mpRoot) { // case mpRoot left is largest value in subtree!
+                                // so modify leftPtr!
+            buffer->setLeftPtr(pNode->getLeftPtr()); 
+        } else { // -> buffer != mpRoot -> modify the rightPtr!
+            buffer->setRightPtr(pNode->getLeftPtr());
+            buffer = mpRoot;
+        }
+        
 
         // insert pNode in place of old root, update root, and then delete old root
         pNode->setLeftPtr(mpRoot->getLeftPtr());
@@ -408,9 +401,13 @@ void avl_map<K, V>::erase(const K& key) {
         mpRoot = pNode;
         delete buffer;
 
+        mpRoot->setBalanceFactor(getMaxHeight(mpRoot->getLeftPtr()) - getMaxHeight(mpRoot->getRightPtr()));
+        if (std::abs(mpRoot->getBalanceFactor()) > 1) { this->balanceHelper(mpRoot, mpRoot); }
+
     } else {
         this->eraseHelper(mpRoot, key);
     }
+
     
 }
 
@@ -418,10 +415,11 @@ template <class K, class V>
 bool avl_map<K, V>::eraseHelper(avl_node<K, V>* pTree, const K& key) {
 
     bool success = false;
+    bool left = false;
     
     if (pTree != nullptr) { // check for dead end
 
-        bool left = (pTree->getKey() < key)? true : false;
+        left = (key < pTree->getKey()) ? true : false;
         avl_node<K, V>* pNext = (left) ? pTree->getLeftPtr() : pTree->getRightPtr();
 
         if (pNext->getKey() != key) { // key not found, search another level
@@ -429,27 +427,52 @@ bool avl_map<K, V>::eraseHelper(avl_node<K, V>* pTree, const K& key) {
             success = this->eraseHelper(pNext, key);
 
         } else { // key found!
-            avl_node<K, V>* pNode = nullptr;
-            avl_node<K, V>* buffer = pNext;
-            if (left) {
-                pNode = pNext->getRightPtr(); // start in left subtree of node to be deleted
 
-                // advance until pNode is at rightmost leaf node and buffer is above it
-                while (pNode->getRightPtr() != nullptr) {
+            // attempt to go into left subtree, but if its a dead end go into special case
+            if (pNext->getLeftPtr() != nullptr) {
+                avl_node<K, V>* pNode = pNext->getLeftPtr();
+                avl_node<K, V>* buffer = pNext;
+
+                // step until pNode is the rightmost node of the left subtree
+                // and buffer points at the node above pNode
+                while (pNode != nullptr && pNode->getRightPtr() != nullptr) {
                     buffer = pNode;
                     pNode = pNode->getRightPtr();
                 }
-
-                if (buffer == pNext) {
-                    buffer->setLeftPtr(pNode->getLeftPtr());
-                } else {
-                    buffer->setRightPtr(nullptr);
+                // cut pNode from tree and point buffer back at root
+                if (buffer == pNext) { // case pNext left is largest value in subtree!
+                                        // so modify leftPtr!
+                    buffer->setLeftPtr(pNode->getLeftPtr()); 
+                } else { // -> buffer != pNext -> modify the rightPtr!
+                    buffer->setRightPtr(pNode->getLeftPtr());
+                    buffer = pNext;
                 }
-                //buffer = pNext.
-                //pNode.se
+
+                // insert pNode in place of found node, update parent node, and then delete found node
+                pNode->setLeftPtr(pNext->getLeftPtr());
+                pNode->setRightPtr(pNext->getRightPtr());
+                if (left) {
+                    pTree->setLeftPtr(pNode);
+                } else {
+                    pTree->setRightPtr(pNode);
+                }
+                delete buffer;
+            } else { // there is no left subtree! -> link around found node
+                pTree->setRightPtr(pNext->getRightPtr());
+                delete pNext;
+
+            }
+
+            success = true;
+        }
+        if (success) {
+            pTree->setBalanceFactor(getMaxHeight(pTree->getLeftPtr()) - getMaxHeight(pTree->getRightPtr()));
+            if (left && std::abs(pTree->getLeftPtr() != nullptr && pTree->getLeftPtr()->getBalanceFactor()) > 1) {
+                this->balanceHelper(pTree, pTree->getLeftPtr());
+            } else if (pTree->getRightPtr() != nullptr && std::abs(pTree->getRightPtr()->getBalanceFactor()) > 1) {
+                this->balanceHelper(pTree, pTree->getRightPtr());
             }
         }
-
     }
 
     return success;
@@ -500,8 +523,5 @@ typename avl_map<K, V>::Iterator avl_map<K, V>::find(const K& key) {
 
     return iter;
 }
-
-
-
 
 #endif

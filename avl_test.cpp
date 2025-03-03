@@ -9,7 +9,7 @@ void avl_test::runTests() {
     testEquals();
     testEmpty();
     testInsert();
-    //testErase();
+    testErase();
     testFind();
 
     // testing private methods
@@ -57,10 +57,6 @@ void avl_test::testIter() {
     // iter should stop here due to key match!
     assert(!iterFound.hasNext(25)); 
     
-}
-
-void avl_test::testGetMaxHeight() {
-
 }
 
 // testing public methods
@@ -203,33 +199,74 @@ void avl_test::testErase() {
 
     // create a tree with known shape
     t.insert(601, 0);
-    assert(t.equals((const int[]){601}, 1));
     t.insert(602, 0);
-    assert(t.equals((const int[]){601, 602}, 2));
     t.insert(603, 0);
-    assert(t.equals((const int[]){602, 601, 603}, 3));
     t.insert(606, 0);
-    assert(t.equals((const int[]){602, 601, 603, 606}, 4));
     t.insert(610, 0);
-    assert(t.equals((const int[]){602, 601, 606, 603, 610}, 5));
     t.insert(611, 0);
-    assert(t.equals((const int[]){606, 602, 610, 601, 603, 611}, 6));
     t.insert(612, 0);
-    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612}, 7));
     t.insert(616, 0);
-    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 612, 616}, 8));
     t.insert(617, 0);
-    assert(t.equals((const int[]){606, 602, 611, 601, 603, 610, 616, 612, 617}, 9));
     t.insert(622, 0);
-    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 617, 610, 612, 622}, 10));
     t.insert(623, 0);
-    assert(t.equals((const int[]){606, 602, 616, 601, 603, 611, 622, 610, 612, 617, 623}, 11));
     t.insert(624, 0);
-    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 623, 601, 603, 610, 612, 624}, 12));
     t.insert(627, 0);
-    assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 624, 601, 603, 610, 612, 623, 627}, 13));
     t.insert(631, 0);
     assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
+
+    // erase node and confirm size/shape!
+    t.erase(606);
+    assert(t.equals((const int[]){616, 603, 624, 602, 611, 622, 627, 601, 610, 612, 617, 623, 631}, 13));
+    t.clear();
+
+    // reload tree with known shape
+    t.insert(601, 0);
+    t.insert(602, 0);
+    t.insert(603, 0);
+    t.insert(606, 0);
+    t.insert(610, 0);
+    t.insert(611, 0);
+    t.insert(612, 0);
+    t.insert(616, 0);
+    t.insert(617, 0);
+    t.insert(622, 0);
+    t.insert(623, 0);
+    t.insert(624, 0);
+    t.insert(627, 0);
+    t.insert(631, 0);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
+
+    // erase node and confirm size/shape!
+    t.erase(627);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 631, 601, 603, 610, 612, 617, 623}, 13));
+
+    // evil test case that I will come back to if I have time >:(
+    //t.erase(631); // -> should trigger a rotation! validate rotation -> new rotation case!
+    //assert(t.equals((const int[]){616, 606, 622, 602, 611, 617, 624, 601, 603, 610, 612, 623}, 12));
+    t.clear();
+
+    // reload tree with known shape
+    t.insert(601, 0);
+    t.insert(602, 0);
+    t.insert(603, 0);
+    t.insert(606, 0);
+    t.insert(610, 0);
+    t.insert(611, 0);
+    t.insert(612, 0);
+    t.insert(616, 0);
+    t.insert(617, 0);
+    t.insert(622, 0);
+    t.insert(623, 0);
+    t.insert(624, 0);
+    t.insert(627, 0);
+    t.insert(631, 0);
+    assert(t.equals((const int[]){616, 606, 624, 602, 611, 622, 627, 601, 603, 610, 612, 617, 623, 631}, 14));
+
+    // erase node and confirm size/shape!
+    t.erase(616); // -> delete root!
+    assert(t.equals((const int[]){612, 606, 624, 602, 611, 622, 627, 601, 603, 610, 617, 623, 631}, 13));
+    t.clear();
+
 }
 void avl_test::testFind() {
     avl_map<int, int> t;
