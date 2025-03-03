@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-#include <forward_list>
+#include <list>
 #include <iostream>
 #include <fstream>
 
@@ -15,7 +15,7 @@ class tree_comparison {
     private:
     std::map<int, USCity> mStdMap; // STL map to compare against
     avl_map<int, USCity> mAvlMap; // my custom self balancing avl_map
-    std::forward_list<int> mKeys; // list of keys to search during bench marking
+    std::list<int> mKeys; // list of keys to search during simulation
     
     public:
 

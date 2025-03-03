@@ -46,6 +46,7 @@ class avl_map {
 
     private:
     avl_node<K, V>* mpRoot;
+    int mSize;
     
     // private methods
     void deleteTreeHelper(avl_node<K, V>* pTree);
@@ -131,6 +132,7 @@ void avl_map<K, V>::Iterator::next(const K& key) {
 template <class K, class V>
 avl_map<K, V>::avl_map() {
     this->mpRoot = nullptr;
+    this->mSize = 0;
 }
 
 // destructor
@@ -181,16 +183,25 @@ int avl_map<K, V>::getMaxHeight(avl_node<K, V>* pTree) {
 // public methods
 template <class K, class V>
 void avl_map<K, V>::insert(const K& key, const V& value) {
+
+    bool success = false;
+
     if (this->mpRoot == nullptr) { // insert on empty tree
         this->mpRoot = new avl_node<K, V>(key, value);
         assert(this->mpRoot != nullptr); // crash if heap alloc fails
     } else { // tree is not empty, traverse and insert
         
-        this->insertHelper(key, value, this->mpRoot);
+        success = this->insertHelper(key, value, this->mpRoot);
     }
-    // after insert check if mpRoot needs balancing since insert only checks subtree balance
-    if (mpRoot != nullptr && std::abs(mpRoot->getBalanceFactor()) > 1) {
-        this->balanceHelper(mpRoot, mpRoot);
+
+    if (success) {
+
+        mSize += 1;
+
+        // after insert check if mpRoot needs balancing since insert only checks subtree balance
+        if (mpRoot != nullptr && std::abs(mpRoot->getBalanceFactor()) > 1) {
+            this->balanceHelper(mpRoot, mpRoot);
+        }
     }
 
 }
@@ -372,6 +383,8 @@ void avl_map<K, V>::rotateRoot(avl_node<K, V>* pChild, ROTATE r) {
 template <class K, class V>
 void avl_map<K, V>::erase(const K& key) {
 
+    bool success = false;
+
     if (mpRoot->getKey() == key) {
         // key match at the root node!
         // set the rightmost node of the left subtree as new root
@@ -401,13 +414,16 @@ void avl_map<K, V>::erase(const K& key) {
         mpRoot = pNode;
         delete buffer;
 
+        success = true;
+
         mpRoot->setBalanceFactor(getMaxHeight(mpRoot->getLeftPtr()) - getMaxHeight(mpRoot->getRightPtr()));
         if (std::abs(mpRoot->getBalanceFactor()) > 1) { this->balanceHelper(mpRoot, mpRoot); }
 
     } else {
-        this->eraseHelper(mpRoot, key);
+        success = this->eraseHelper(mpRoot, key);
     }
 
+    if (success) { mSize--; }
     
 }
 

@@ -2,6 +2,9 @@
 
 #include "tree_comparison.hpp"
 #include "USCity.hpp"
+#include <ctime>
+#include <iomanip>
+#include <ios>
 #include <string>
 #include <utility>
 
@@ -18,6 +21,7 @@ tree_comparison::tree_comparison() {
         std::string fields[17];
         file.ignore(10000, '\n'); // ignore header line
         USCity* buffer = nullptr;
+        std::srand(time(0));
 
         // read in one line at a time and create a new USCity obj
         // to load into map and avl_map
@@ -72,7 +76,11 @@ tree_comparison::tree_comparison() {
             mStdMap.insert(std::map<int, USCity>::value_type(zipCode, *buffer));
             mAvlMap.insert(zipCode, *buffer);
 
-            mKeys.push_front(zipCode); // save current zip as a key
+            // csv file has 33,784 entries, to get 1000 saved keys at random
+            // save about 3% of rows until 1000 is hit, call it 4% to get 1000 for sure
+            if (mKeys.size() < 1000 && (std::rand() % 100) < 4) {
+                mKeys.push_back(zipCode); // save current zip as a key
+            }
 
             delete buffer;
         }
@@ -88,5 +96,42 @@ tree_comparison::~tree_comparison() {
 
 //public methods
 void tree_comparison::runSimulation() {
-    
+
+    clock_t start, end; // init variables for tracking performance
+    double avlMapTime, stdMapTime, delta;
+    double sum = 0;
+
+    std::cout << std::scientific << std::setprecision(4);
+
+    for (auto it = mKeys.begin(); it != mKeys.end(); it++) {
+
+        // test stdMap first
+        start = clock();
+        mStdMap.find(*it);
+        end = clock();
+        stdMapTime = (double)(end - start)/CLOCKS_PER_SEC;
+
+        // test avl_map
+        start = clock();
+        mAvlMap.find(*it);
+        end = clock();
+        avlMapTime = (double)(end - start)/CLOCKS_PER_SEC;
+
+        delta = avlMapTime - stdMapTime;
+
+        std::cout
+        << "search time in seconds for key: " << *it 
+        << ", std::map = " << stdMapTime
+        << ", avl_map = " << avlMapTime 
+        << ", delta = avl_map duration - std::map duration = " 
+        << delta << '\n';
+
+        sum += delta; // track sum of search differences to see which 
+                      // collection is faster on average
+    }
+
+    std::cout
+    << "across " << mKeys.size() 
+    << " samples the average difference between avl_map and std::map was: "
+    << sum / mKeys.size() << '\n';
 }
