@@ -48,7 +48,7 @@ class avl_map {
     avl_node<K, V>* mpRoot;
     int mSize;
     
-    // private methods
+    // private methods -> hide pointers from public api!
     void deleteTreeHelper(avl_node<K, V>* pTree);
     int getMaxHeight(avl_node<K, V>* pTree);
     int getMaxHeightHelper(avl_node<K, V>* pTree, int level);
@@ -71,7 +71,7 @@ class avl_map {
     bool empty(); // -> returns true if tree is empty
     void insert(const K& key, const V& value); // -> insert element and balance if needed
     void erase(const K& key); // -> remove element by key and balance if needed
-    bool equals(const K* keys, const int& size); // -> compare keys and breadth first order against array of keys -> helpful for tests!
+    bool equals(const K* keys, const int& size); // -> compare keys in breadth first order against array of keys -> helpful for tests!
     void clear(); // -> clear contents of tree
 
     avl_map<K, V>::Iterator begin(); // -> get iterator starting at root of the tree
