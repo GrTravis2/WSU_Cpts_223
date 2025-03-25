@@ -24,7 +24,7 @@ class HashMap {
     typedef struct hashRow {
         K& key;
         V& data;
-        HashMap::status status;
+        bool empty = true;
     }HASH_ROW;
 
     protected:
@@ -70,7 +70,7 @@ class HashMap {
 // constructor
 template <class K, class V>
 HashMap<K, V>::HashMap(int size) {
-    mData = new HASH_ROW[size];
+    mData = new hashRow[size];
     mSize = size;
 }
 
@@ -93,22 +93,22 @@ template <class K, class V>
 V& HashMap<K, V>::operator[](const K& key) { // -> handles find and insert given key
     int i = 0;
     int base = mHash(key);
-    hashRow& val = mData[base % mSize];
+    hashRow& cell = mData[base % mSize];
 
-    while (val.key != key || val.status != EMPTY) {
-        val = mData[(base + pow(i++, 2)) % mSize];
+    while (cell.key != key && !cell.empty) { // iterate until key match or empty cell
+        cell = mData[(base + pow(i++, 2)) % mSize];
 
-        assert(i < 100); // crash if too many insert attempts
+        assert(i < 10); // crash if too many insert attempts
     }
 
-    return val; // returns record of matching key or empty cell for insert
+    return cell; // returns record of matching key or empty cell for insert
 }
 
 template <class K, class V>
 V* HashMap<K, V>::find(const K& key) {
     hashRow cell = this[key];
     V* pCell = &cell;
-    if (cell.status != FULL) { pCell = nullptr; }
+    if (cell.empty) { pCell = nullptr; }
 
     return pCell;
 }
@@ -118,10 +118,10 @@ bool HashMap<K, V>::insert(const K& key, const V& value ) {
     hashRow cell = this[key];
     bool ok = false;
 
-    if (value.status == EMPTY) {
+    if (value.empty) {
         cell.key = key;
         cell.data = value;
-        cell.status = FULL;
+        cell.empty = false;
 
         ok = true;
     }
@@ -133,15 +133,14 @@ bool HashMap<K, V>::insert(const K& key, const V& value ) {
 template <class K, class V>
 bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash map
     hashRow cell = this[key];
-    bool found = false;
 
-    return cell.status == FULL;
+    return !cell.empty;
 }
 
 template <class K, class V>
 void HashMap<K, V>::print() const { // -> prints contents of hashmap to console
     for (int i : mData) { 
-       if (mData[i].status == FULL) { std::cout << mData[i].data; }
+       if (!mData[i].empty) { std::cout << mData[i].data; }
     }
 }
 
