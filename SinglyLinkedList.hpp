@@ -97,6 +97,7 @@ class SinglyLinkedList {
 
         // getters
         int getSize() const;
+        T& front() const;
 
         // setters
 
@@ -125,6 +126,11 @@ SinglyLinkedList<T>::~SinglyLinkedList() {
 template <class T>
 int SinglyLinkedList<T>::getSize() const {
     return mSize;
+}
+
+template <class T>
+T& SinglyLinkedList<T>::front() const {
+    return mpHead->getData();
 }
 
 // setters
