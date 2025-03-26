@@ -19,11 +19,24 @@ class HashMap {
         DELETED,
     }STATUS;
 
-    typedef struct hashRow {
-        K* key = nullptr;
-        V* data = nullptr;
-        bool empty = true;
-    }HASH_ROW;
+    class hashRow {
+        public:
+            K key;
+            V data;
+            bool empty;
+
+            // constructor
+            hashRow() : empty(true) {}
+
+            // copy assignment
+            hashRow& operator=(hashRow& rhs) {
+                key = rhs.key;
+                data = rhs.data;
+                empty = rhs.empty;
+
+                return *this;
+            }
+    };
 
     protected:
         hashRow* mData; // array of value type on the heap, with size mSize
@@ -56,7 +69,7 @@ class HashMap {
         V* find(const K& key);
 
         // inserts key, value pair, returns true on success
-        bool insert(K key, V value);
+        bool insert(const K& key, const V& value);
 
         // returns true if key in hash map
         bool contains(const K& key);
@@ -92,15 +105,15 @@ template <class K, class V>
 typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) { 
     int i = 0;
     int base = mHash(key);
-    hashRow* cell = &mData[base % mSize];
+    hashRow& cell = mData[base % mSize];
 
-    while (*(cell->key) != key && !(cell->empty)) { // iterate until key match or empty cell
-        cell = &mData[(base + (i * i)) % mSize];
+    while (cell.key != key && !(cell.empty)) { // iterate until key match or empty cell
+        cell = mData[(base + (i * i)) % mSize];
 
         assert(i < 10); // crash if too many insert attempts
     }
 
-    return *cell; // returns record of matching key or empty cell for insert
+    return cell; // returns record of matching key or empty cell for insert
 }
 
 template <class K, class V>
@@ -109,17 +122,17 @@ V* HashMap<K, V>::find(const K& key) {
     hashRow* pCell = &cell;
     if (cell.empty) { pCell = nullptr; }
 
-    return pCell->data;
+    return &pCell->data;
 }
 
 template <class K, class V>
-bool HashMap<K, V>::insert(K key, V value ) {
+bool HashMap<K, V>::insert(const K& key, const V& value) {
     hashRow cell = (*this)[key];
     bool ok = false;
 
     if (cell.empty) {
-        cell.key = &key;
-        cell.data = &value;
+        cell.key = key;
+        cell.data = value;
         cell.empty = false;
 
         ok = true;
