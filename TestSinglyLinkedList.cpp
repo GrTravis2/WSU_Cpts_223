@@ -7,7 +7,7 @@
 // run all tests
 void TestSinglyLinkedList::runTests() {
 
-    // chain all tests -> will crash if test fails
+    // chain all tests -> will crash if any test fails
     testInsertAtFront().testFind().testGetSize().testPrint();
 }
 

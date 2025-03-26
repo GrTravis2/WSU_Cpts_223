@@ -28,7 +28,7 @@ class HashMap {
     }HASH_ROW;
 
     protected:
-        V* mData; // array of value type on the heap, with size mSize
+        hashRow* mData; // array of value type on the heap, with size mSize
         int mSize;
         std::hash<K> mHash; // init hash function
 
@@ -106,7 +106,7 @@ V& HashMap<K, V>::operator[](const K& key) { // -> handles find and insert given
 
 template <class K, class V>
 V* HashMap<K, V>::find(const K& key) {
-    hashRow cell = this[key];
+    hashRow cell = (*this)[key];
     V* pCell = &cell;
     if (cell.empty) { pCell = nullptr; }
 
@@ -115,7 +115,7 @@ V* HashMap<K, V>::find(const K& key) {
 
 template <class K, class V>
 bool HashMap<K, V>::insert(const K& key, const V& value ) {
-    hashRow cell = this[key];
+    hashRow cell = (*this)[key];
     bool ok = false;
 
     if (value.empty) {
@@ -132,7 +132,7 @@ bool HashMap<K, V>::insert(const K& key, const V& value ) {
 
 template <class K, class V>
 bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash map
-    hashRow cell = this[key];
+    hashRow cell = (*this)[key];
 
     return !cell.empty;
 }
