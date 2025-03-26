@@ -13,18 +13,22 @@ void TestHashMap::runTests() { // entry point for tests
 // ** INDIVIDUAL TESTS ** 
 TestHashMap& TestHashMap::testSquareBracketOperator() {
     for (int i = 0; i < mSize; i++) { mData[i].data = i; } // assign values to index
-
-    int index = mHash("test") % mSize;
+    int base = mHash("test");
+    int index = base % mSize;
     int probing = 0;
     int adjustedIdx = 0;
+    hashRow* check = nullptr;
 
     for (int i = 0; i < 10; i++) {
         // check pos is empty, insert, check not empty
-        probing = index + (i * i); // check next probing index
+        probing = (i * i); // check next probing index
         adjustedIdx = (index + probing) % mSize;
-        assert(mData[adjustedIdx].empty); 
-        (*this)["test"].data = -1;
-        assert(!mData[adjustedIdx].empty && (mData[adjustedIdx].data) == -1);
+        assert(mData[adjustedIdx].empty);
+        check = &(*this)["test"];
+        (*this)["test"].data = probing;
+        (*this)["test"].empty = false;
+        assert(!mData[adjustedIdx].empty);
+        assert((mData[adjustedIdx].data) == probing);
     }
     
     return *this;

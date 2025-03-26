@@ -13,11 +13,7 @@
 template <class K, class V>
 class HashMap {
 
-    typedef enum status {
-        EMPTY,
-        FULL,
-        DELETED,
-    }STATUS;
+    protected:
 
     class hashRow {
         public:
@@ -36,9 +32,8 @@ class HashMap {
 
                 return *this;
             }
-    };
+        };
 
-    protected:
         hashRow* mData; // array of value type on the heap, with size mSize
         int mSize;
         std::hash<K> mHash; // init hash function
@@ -110,7 +105,7 @@ typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) {
     while (cell.key != key && !(cell.empty)) { // iterate until key match or empty cell
         cell = mData[(base + (i * i)) % mSize];
 
-        assert(i < 10); // crash if too many insert attempts
+        assert(i++ < 10); // crash if too many insert attempts
     }
 
     return cell; // returns record of matching key or empty cell for insert

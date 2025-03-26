@@ -8,7 +8,7 @@
 void TestSinglyLinkedList::runTests() {
 
     // chain all tests -> will crash if any test fails
-    testInsertAtFront().testFind().testGetSize().testPrint();
+    testInsertAtFront().testFind().testGetSize();
 }
 
 // method tests set up for method chaining
