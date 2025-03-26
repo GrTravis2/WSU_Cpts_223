@@ -62,4 +62,6 @@ TestSinglyLinkedList& TestSinglyLinkedList::testPrint() {
     SinglyLinkedList<int> t;
     for(int i = 0; i < 10; i++) { t.insertAtFront(i); }
     t.print();
+
+    return *this;
 }

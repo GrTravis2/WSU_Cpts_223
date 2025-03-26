@@ -12,7 +12,7 @@ void TestHashMap::runTests() { // entry point for tests
 
 // ** INDIVIDUAL TESTS ** 
 TestHashMap& TestHashMap::testSquareBracketOperator() {
-    for (int i = 0; i < mSize; i++) { mData[i].data = i; } // assign values to index
+    for (int i = 0; i < mSize; i++) { *mData[i].data = i; } // assign values to index
 
     int index = mHash("test") % mSize;
     int probing = 0;
@@ -23,8 +23,8 @@ TestHashMap& TestHashMap::testSquareBracketOperator() {
         probing = index + pow(i, 2); // check next probing index
         adjustedIdx = (index + probing) % mSize;
         assert(mData[adjustedIdx].empty); 
-        (*this)["test"] = -1;
-        assert(!mData[adjustedIdx].empty && mData[adjustedIdx].data == -1);
+        *(*this)["test"].data = -1;
+        assert(!mData[adjustedIdx].empty && *(mData[adjustedIdx].data) == -1);
     }
     
     return *this;
@@ -43,8 +43,8 @@ TestHashMap& TestHashMap::testInsert() {
         insert("test", -1);
         assert(
             !mData[adjustedIdx].empty 
-            && mData[adjustedIdx].data == -1
-            && mData[adjustedIdx].key == "test"
+            && *(mData[adjustedIdx].data) == -1
+            && *(mData[adjustedIdx].key) == "test"
         );
     }
 
@@ -83,7 +83,7 @@ TestHashMap& TestHashMap::testContains() {
 
 TestHashMap& TestHashMap::testPrint() {
     for (int i = 0; i < mSize; i++) {
-        mData[i].data = i;
+        *mData[i].data = i;
         if (i % 2 == 0) { mData[i].empty = false; }
     }
 
@@ -93,4 +93,6 @@ TestHashMap& TestHashMap::testPrint() {
     << "ONLY EVEN NUMBERS 0, 2, .., 28, 30";
 
     print();
+
+    return *this;
 }

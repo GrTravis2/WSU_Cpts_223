@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include "TestSinglyLinkedList.hpp"
+#include "TestHashMap.hpp"
+
 using namespace std;
 
 void printHelp()
@@ -51,6 +54,11 @@ void bootStrap()
 
 int main(int argc, char const *argv[])
 {
+
+    TestSinglyLinkedList().runTests();
+    TestHashMap().runTests();
+
+    /*
     string line;
     bootStrap();
     while (getline(cin, line) && line != ":quit")
@@ -65,5 +73,7 @@ int main(int argc, char const *argv[])
         }
         cout << "> ";
     }
+
+    */
     return 0;
 }

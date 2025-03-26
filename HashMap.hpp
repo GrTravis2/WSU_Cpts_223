@@ -1,9 +1,7 @@
 #ifndef HASH_MAP_H
 #define HASH_MAP_H
 
-#include <cmath>
 #include <functional>
-#include <math.h>
 #include <iostream>
 #include <assert.h>
 
@@ -22,8 +20,8 @@ class HashMap {
     }STATUS;
 
     typedef struct hashRow {
-        K& key;
-        V& data;
+        K* key = nullptr;
+        V* data = nullptr;
         bool empty = true;
     }HASH_ROW;
 
@@ -37,7 +35,7 @@ class HashMap {
         // returns cell value from hash map with several cases
         // case value.status = FULL -> key match
         // case value.status = EMPTY -> empty cell, assign to insert
-        V& operator[](const K&);
+        hashRow& operator[](const K&);
 
     public:
 
@@ -58,7 +56,7 @@ class HashMap {
         V* find(const K& key);
 
         // inserts key, value pair, returns true on success
-        bool insert(const K& key, const V& value);
+        bool insert(K key, V value);
 
         // returns true if key in hash map
         bool contains(const K& key);
@@ -89,38 +87,39 @@ int HashMap<K, V>::getSize() const {
 // public methods
 
 // dont forget quadratic probing >:(
+// -> handles find and insert given key
 template <class K, class V>
-V& HashMap<K, V>::operator[](const K& key) { // -> handles find and insert given key
+typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) { 
     int i = 0;
     int base = mHash(key);
-    hashRow& cell = mData[base % mSize];
+    hashRow* cell = &mData[base % mSize];
 
-    while (cell.key != key && !cell.empty) { // iterate until key match or empty cell
-        cell = mData[(base + pow(i++, 2)) % mSize];
+    while (*(cell->key) != key && !(cell->empty)) { // iterate until key match or empty cell
+        cell = &mData[(base + (i * i)) % mSize];
 
         assert(i < 10); // crash if too many insert attempts
     }
 
-    return cell; // returns record of matching key or empty cell for insert
+    return *cell; // returns record of matching key or empty cell for insert
 }
 
 template <class K, class V>
 V* HashMap<K, V>::find(const K& key) {
     hashRow cell = (*this)[key];
-    V* pCell = &cell;
+    hashRow* pCell = &cell;
     if (cell.empty) { pCell = nullptr; }
 
-    return pCell;
+    return pCell->data;
 }
 
 template <class K, class V>
-bool HashMap<K, V>::insert(const K& key, const V& value ) {
+bool HashMap<K, V>::insert(K key, V value ) {
     hashRow cell = (*this)[key];
     bool ok = false;
 
-    if (value.empty) {
-        cell.key = key;
-        cell.data = value;
+    if (cell.empty) {
+        cell.key = &key;
+        cell.data = &value;
         cell.empty = false;
 
         ok = true;
@@ -139,7 +138,7 @@ bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash m
 
 template <class K, class V>
 void HashMap<K, V>::print() const { // -> prints contents of hashmap to console
-    for (int i : mData) { 
+    for (int i = 0; i < mSize; i++) { 
        if (!mData[i].empty) { std::cout << mData[i].data; }
     }
 }

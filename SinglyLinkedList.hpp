@@ -22,12 +22,12 @@ class ListNode {
         ~ListNode();
 
         // getters
-        T& getData() const;
+        T& getData();
         ListNode* getNextPtr();
 
         // setters
         ListNode& setData(const T& data);
-        ListNode& setNextPtr(const ListNode& nextPtr);
+        ListNode& setNextPtr(ListNode* nextPtr);
 
         // public methods
         // nothing for now!
@@ -49,7 +49,7 @@ ListNode<T>::~ListNode() {
 
 // getters
 template <class T>
-T& ListNode<T>::getData() const {
+T& ListNode<T>::getData() {
     return mData;
 }
 
@@ -68,7 +68,7 @@ ListNode<T>& ListNode<T>::setData(const T& data) {
 }
 
 template <class T>
-ListNode<T>& ListNode<T>::setNextPtr(const ListNode& nextPtr) {
+ListNode<T>& ListNode<T>::setNextPtr(ListNode* nextPtr) {
     mpNext = nextPtr;
 
     return *this; // return self for method chaining 
@@ -168,7 +168,10 @@ template <class T>
 void SinglyLinkedList<T>::print() { 
 
     ListNode<T>* pNode = mpHead; // traverse list until end, print to console
-    while (pNode != nullptr) { std::cout << pNode->getData() << ",\n";}
+    while (pNode != nullptr) {
+        std::cout << pNode->getData() << ",\n";
+        pNode = pNode->getNextPtr();
+    }
 }
 
 // private methods
