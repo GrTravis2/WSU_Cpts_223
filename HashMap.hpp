@@ -15,9 +15,9 @@ class HashMap {
 
     protected:
 
-    class hashRow {
+    class hashRow { // sub-class for each entry in the hashmap
         public:
-            K key;
+            K key; // [{.key, .data, .empty}] each row
             V data;
             bool empty;
 
@@ -41,8 +41,8 @@ class HashMap {
         // private methods
 
         // returns cell value from hash map with several cases
-        // case value.status = FULL -> key match
-        // case value.status = EMPTY -> empty cell, assign to insert
+        // case value.empty = false -> key match
+        // case value.empty = true -> empty cell, assign to insert
         hashRow& operator[](const K&);
 
     public:

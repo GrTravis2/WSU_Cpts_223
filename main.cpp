@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "InventoryQueryTool.hpp"
 #include "TestSinglyLinkedList.hpp"
 #include "TestHashMap.hpp"
 
@@ -50,6 +51,8 @@ void bootStrap()
     // example: reading from CSV and initializing the data structures
     // Don't dump all code into this single function
     // use proper programming practices
+
+
 }
 
 int main(int argc, char const *argv[])
@@ -58,7 +61,9 @@ int main(int argc, char const *argv[])
     TestSinglyLinkedList().runTests();
     TestHashMap().runTests();
 
-    /*
+    InventoryQueryTool inventory;
+
+    
     string line;
     bootStrap();
     while (getline(cin, line) && line != ":quit")
@@ -74,6 +79,5 @@ int main(int argc, char const *argv[])
         cout << "> ";
     }
 
-    */
     return 0;
 }

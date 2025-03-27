@@ -8,14 +8,13 @@
 
 class Category : public HashMap<std::string, AmazonProduct*>{
 
-    private:
+    public:
         std::string mCategoryName;
 
-    public:
+    // constructor -> might have to increment size if 53 isnt enough...
+    Category(const std::string& category) : mCategoryName(category), HashMap(53) {}
 
-    // constructor
-
-    // destructor
+    // destructor -> let HashMap destructor clean up!
 
     // getters
 
