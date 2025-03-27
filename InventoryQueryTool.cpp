@@ -5,6 +5,7 @@
 #include "Category.hpp"
 #include "SinglyLinkedList.hpp"
 #include <fstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -54,21 +55,30 @@ InventoryQueryTool::InventoryQueryTool() :
             leading = mData[i].all.find('\"', lagging); // step to front of categories field
             lagging = ++leading;
             leading = mData[i].all.find('\"', lagging); // step to end of categories field before assigning
-            mData[i].categories = mData[i].all.substr(lagging, leading); // save values
+            mData[i].categories = mData[i].all.substr(lagging, leading - lagging); // save values
 
             // parse string categories for insert into Categories class
             leading = 0;
+            Category* cat = new Category(s);
             while(leading != std::string::npos) {
                 lagging = leading; // -> copy each category until end of string
-                leading = mData[i].categories.find('|');
+                leading = mData[i].categories.find('|', lagging);
+
+                // copy and clean whitespace around string before insertion
+                s = mData[i].categories.substr(lagging, leading++ - lagging);
+                try {if(s.at(leading++) == ' ') {}} catch (std::out_of_range) {
+                    leading = std::string::npos;
+                }
+                while(s.back() == ' ') { s.pop_back(); }
 
                 // record category to save other products by category in the future
-                s = mData[i].categories.substr(lagging, leading);
-                if (!mCategories.mCheck->contains(s)) { // if
+                if (!mCategories.mCheck->contains(s)) { // if already recorded, skip
                     mCategories.mCheck->insert(s, true);
-                    mCategories.mListCategories->insertAtFront(Category(s));
-                    mCategories.mListCategories->front().insert(mData[i].id, mData[i].productName);
+                    mCategories.mListCategories->insertAtFront(*cat);
                 }
+
+                // search the list and insert product into correct category table
+                mCategories.mListCategories->find(*cat)->insert(mData[i].id, mData[i].productName);
             }
 
 
@@ -123,12 +133,23 @@ InventoryQueryTool::~InventoryQueryTool() {
 
 // public methods
 
-// -> return ptr to data if found, else nullptr
-AmazonProduct* InventoryQueryTool::find(const std::string& key) {
-
+// -> print data if found, else print error not found
+void InventoryQueryTool::find(const std::string& key) {
+    AmazonProduct** pData = mSearch.find(key);
+    if(pData != nullptr && *pData != nullptr) {
+        std::cout << **pData;
+    } else {
+        std::cout << "Inventory/Product not found." << std::endl;
+    }
 }
 
 // -> print contents of specified category
 void InventoryQueryTool::printCategory(const std::string& key_category) {
+    Category* pCat = mCategories.mListCategories->find(key_category);
 
+    if(pCat != nullptr) {
+        std::cout << *pCat;
+    } else {
+        std::cout << "Inventory/Product not found" << std::endl;
+    }
 }

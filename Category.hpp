@@ -2,9 +2,9 @@
 #define CATEGORY_H
 
 #include <string>
+#include <iostream>
 
 #include "HashMap.hpp"
-#include "AmazonProduct.hpp"
 #include "SinglyLinkedList.hpp"
 
 class Category : public HashMap<std::string, std::string>{
@@ -16,7 +16,7 @@ class Category : public HashMap<std::string, std::string>{
         Category() : mCategoryName(), HashMap(53) {}
 
         // constructor -> might have to increment size if 53 isnt enough...
-        Category(const std::string category) : mCategoryName(category), HashMap(53) {}
+        Category(const std::string category) : mCategoryName(category), HashMap<std::string, std::string>(53) {}
 
         // destructor -> let HashMap destructor clean up!
 
@@ -26,7 +26,19 @@ class Category : public HashMap<std::string, std::string>{
 
         // public methods
 
-        friend bool operator!=(const Category& lhs, const Category& rhs);
+        friend bool operator!=(const Category& lhs, const Category& rhs) {
+            return !(lhs.mCategoryName == rhs.mCategoryName);
+        }
+
+        friend std::ostream& operator<<(std::ostream& lhs, Category& rhs) {
+            lhs 
+            << "All products from category: " << rhs.mCategoryName << "\n"
+            << "id, product name" << std::endl;
+
+            rhs.print();
+
+            return lhs;
+        }
 
 };
 

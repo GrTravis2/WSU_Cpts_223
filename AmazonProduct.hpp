@@ -2,7 +2,6 @@
 #define AMAZON_PRODUCT_H
 
 #include <string>
-#include <fstream>
 #include <iostream>
 
 class AmazonProduct {

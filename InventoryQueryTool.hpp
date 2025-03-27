@@ -34,7 +34,7 @@ class InventoryQueryTool {
         // setters
 
         // public methods
-        AmazonProduct* find(const std::string& key); // -> return ptr to data if found, else nullptr
+        void find(const std::string& key); // -> print data if found, else print error not found
         void printCategory(const std::string& key_category); // -> print contents of specified category
 };
 

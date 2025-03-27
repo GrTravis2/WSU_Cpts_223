@@ -7,6 +7,12 @@
 
 using namespace std;
 
+typedef enum cmd {
+    NONE,
+    FIND,
+    LIST,
+}CMD;
+
 void printHelp()
 {
     cout << "Supported list of commands: " << endl;
@@ -22,8 +28,10 @@ bool validCommand(string line)
            (line.rfind("listInventory") == 0);
 }
 
-void evalCommand(string line)
+CMD evalCommand(string line)
 {
+    CMD cmd = NONE;
+
     if (line == ":help")
     {
         printHelp();
@@ -31,15 +39,15 @@ void evalCommand(string line)
     // if line starts with find
     else if (line.rfind("find", 0) == 0)
     {
-        // Look up the appropriate datastructure to find if the inventory exist
-        cout << "YET TO IMPLEMENT!" << endl;
+        cmd = FIND;
     }
     // if line starts with listInventory
     else if (line.rfind("listInventory") == 0)
     {
-        // Look up the appropriate datastructure to find all inventory belonging to a specific category
-        cout << "YET TO IMPLEMENT!" << endl;
+        cmd = LIST;
     }
+
+    return cmd;
 }
 
 void bootStrap()
@@ -58,26 +66,48 @@ void bootStrap()
 int main(int argc, char const *argv[])
 {
 
+    // testing entry points!
     TestSinglyLinkedList().runTests();
     TestHashMap().runTests();
 
     InventoryQueryTool inventory;
+    CMD cmd = NONE;
 
     
-    string line;
+    string line, arg;
     bootStrap();
     while (getline(cin, line) && line != ":quit")
     {
         if (validCommand(line))
         {
-            evalCommand(line);
+            cmd = evalCommand(line);
         }
         else
         {
+            cmd = NONE;
             cout << "Command not supported. Enter :help for list of supported commands" << endl;
         }
         cout << "> ";
+
+        // parse arg and pass to correct function
+        // copy string after space, should grab everything after command type
+        arg = line.substr(line.find(' '));
+
+        switch(cmd) {
+            case NONE:
+                break;
+            case FIND:
+                inventory.find(arg);
+                break;
+            case LIST:
+                inventory.printCategory(arg);
+                break;
+            default:
+                break;
+        }
     }
+
+    
 
     return 0;
 }

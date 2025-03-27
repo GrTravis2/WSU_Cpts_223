@@ -152,7 +152,7 @@ template <class K, class V>
 void HashMap<K, V>::print() const { // -> prints contents of hashmap to console
     for (int i = 0; i < mSize; i++) { 
        if (!mData[i].empty) {
-            std::cout << mData[i].data << std::endl;
+            std::cout << mData[i].key << ", " << mData[i].data << std::endl;
         }
     }
 }
