@@ -98,31 +98,35 @@ int HashMap<K, V>::getSize() const {
 // -> handles find and insert given key
 template <class K, class V>
 typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) { 
-    int i = 0;
-    int base = mHash(key);
-    hashRow& cell = mData[base % mSize];
+    unsigned int i, adjustedIdx, base;
+    i = 0;
+    base = mHash(key);
+    hashRow* cell = &mData[base % mSize];
 
-    while (cell.key != key && !(cell.empty)) { // iterate until key match or empty cell
-        cell = mData[(base + (i * i)) % mSize];
+    while (cell->key != key && !(cell->empty)) { // iterate until key match or empty cell
+        adjustedIdx = (base + (i * i)) % mSize;
+        cell = &mData[adjustedIdx];
 
         assert(i++ < 10); // crash if too many insert attempts
     }
 
-    return cell; // returns record of matching key or empty cell for insert
+    return *cell; // returns record of matching key or empty cell for insert
 }
 
 template <class K, class V>
 V* HashMap<K, V>::find(const K& key) {
-    hashRow cell = (*this)[key];
-    hashRow* pCell = &cell;
-    if (cell.empty) { pCell = nullptr; }
-
-    return &pCell->data;
+    //hashRow& cell = (*this)[key];
+    hashRow* pCell = &(*this)[key];
+    if (pCell->empty) {
+        return nullptr;
+    } else {
+        return &pCell->data;
+    }
 }
 
 template <class K, class V>
 bool HashMap<K, V>::insert(const K& key, const V& value) {
-    hashRow cell = (*this)[key];
+    hashRow& cell = (*this)[key];
     bool ok = false;
 
     if (cell.empty) {
@@ -139,7 +143,7 @@ bool HashMap<K, V>::insert(const K& key, const V& value) {
 
 template <class K, class V>
 bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash map
-    hashRow cell = (*this)[key];
+    hashRow& cell = (*this)[key];
 
     return !cell.empty;
 }
@@ -147,7 +151,9 @@ bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash m
 template <class K, class V>
 void HashMap<K, V>::print() const { // -> prints contents of hashmap to console
     for (int i = 0; i < mSize; i++) { 
-       if (!mData[i].empty) { std::cout << mData[i].data; }
+       if (!mData[i].empty) {
+            std::cout << mData[i].data << std::endl;
+        }
     }
 }
 

@@ -13,18 +13,14 @@ void TestHashMap::runTests() { // entry point for tests
 // ** INDIVIDUAL TESTS ** 
 TestHashMap& TestHashMap::testSquareBracketOperator() {
     for (int i = 0; i < mSize; i++) { mData[i].data = i; } // assign values to index
-    int base = mHash("test");
-    int index = base % mSize;
-    int probing = 0;
-    int adjustedIdx = 0;
-    hashRow* check = nullptr;
+    unsigned int base = mHash("test");
+    unsigned int probing, adjustedIdx = 0;
 
     for (int i = 0; i < 10; i++) {
         // check pos is empty, insert, check not empty
         probing = (i * i); // check next probing index
-        adjustedIdx = (index + probing) % mSize;
+        adjustedIdx = (base + probing) % mSize;
         assert(mData[adjustedIdx].empty);
-        check = &(*this)["test"];
         (*this)["test"].data = probing;
         (*this)["test"].empty = false;
         assert(!mData[adjustedIdx].empty);
@@ -35,21 +31,24 @@ TestHashMap& TestHashMap::testSquareBracketOperator() {
 }
 
 TestHashMap& TestHashMap::testInsert() {
-    int index = mHash("test") % mSize;
+    // reset data!
+    for(int i = 0; i < mSize; i++) { mData[i].empty = true; }
+    
+    unsigned int base = mHash("test"); // init variables
     int probing = 0;
     int adjustedIdx = 0;
 
     for (int i = 0; i < 10; i++) {
-        // check pos is empty, insert, check not empty
-        probing = index + (i * i); // check next probing index
-        adjustedIdx = (index + probing) % mSize;
-        assert(mData[adjustedIdx].empty); 
+        probing = (i * i); // check next probing index
+        adjustedIdx = (base + probing) % mSize;
+        assert(mData[adjustedIdx].empty);
         insert("test", -1);
         assert(
             !mData[adjustedIdx].empty 
             && (mData[adjustedIdx].data) == -1
             && (mData[adjustedIdx].key) == "test"
         );
+        mData[adjustedIdx].key = ""; // write over for next insert
     }
 
     return *this;
@@ -72,6 +71,10 @@ TestHashMap& TestHashMap::testFind() {
 
 TestHashMap& TestHashMap::testContains() {
     std::string k = "";
+    for(int i = 0; i < mSize; i++) { // reset data
+        mData[i].key = "";
+        mData[i].empty = true;
+    }
 
     for(int i = 0; i < 15; i++) {
         k = std::to_string(i);
@@ -86,15 +89,17 @@ TestHashMap& TestHashMap::testContains() {
 }
 
 TestHashMap& TestHashMap::testPrint() {
+
+    // flip half of the cells to not empty, print all **empty** cells to test
     for (int i = 0; i < mSize; i++) {
         mData[i].data = i;
-        if (i % 2 == 0) { mData[i].empty = false; }
+        mData[i].empty = (i % 2 == 0) ? false : true;
     }
 
     std::cout 
     << "** VISUAL TEST ONLY **" << std::endl
     << "** MAKE SURE OUTPUT MATCHES SEQUENCE **" << std::endl
-    << "ONLY EVEN NUMBERS 0, 2, .., 28, 30";
+    << "ONLY EVEN NUMBERS 0, 2, .., 28, 30" << std::endl;
 
     print();
 
