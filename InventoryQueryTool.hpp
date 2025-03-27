@@ -17,7 +17,7 @@ class InventoryQueryTool {
     private:
         AmazonProduct* mData; // raw data referenced by hashmaps
         HashMap<std::string, AmazonProduct*> mSearch; // main table for searching raw product id
-        SinglyLinkedList<Category> mCategories; // list of categories containing individual maps
+        Categories mCategories; // list of categories containing individual maps
 
         // private methods
 

@@ -33,7 +33,7 @@ TestSinglyLinkedList& TestSinglyLinkedList::testFind() {
         // check before and after inserting value
         assert(t.find(i) == nullptr);
         t.insertAtFront(i);
-        assert(t.find(i)->getData() == i);
+        assert(*t.find(i) == i);
     }
 
     return *this;

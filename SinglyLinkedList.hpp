@@ -103,7 +103,7 @@ class SinglyLinkedList {
 
         // public methods
         void insertAtFront(const T& data); // -> allocate and insert new node containing data
-        ListNode<T>* find(const T& data); // -> return ptr to node matching data
+        T* find(const T& data); // -> return ptr to node matching data
         void print(); // -> print all data in list to console
 
 
@@ -155,12 +155,12 @@ void SinglyLinkedList<T>::insertAtFront(const T& data) { // -> allocate and inse
 
 // return ptr to node matching data or nullptr if not found, requires operator!=
 template <class T>
-ListNode<T>* SinglyLinkedList<T>::find(const T& data) { 
+T* SinglyLinkedList<T>::find(const T& data) { 
 
     ListNode<T>* pNode = mpHead; // traverse list until end or value found
     while (pNode != nullptr && pNode->getData() != data) { pNode = pNode->getNextPtr(); }
 
-    return pNode;
+    return &pNode->getData();
 }
 
 // print all data in list to console, requires overloaded operator<<

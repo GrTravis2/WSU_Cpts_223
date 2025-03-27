@@ -5,25 +5,52 @@
 
 #include "HashMap.hpp"
 #include "AmazonProduct.hpp"
+#include "SinglyLinkedList.hpp"
 
-class Category : public HashMap<std::string, AmazonProduct*>{
+class Category : public HashMap<std::string, std::string>{
 
     public:
         std::string mCategoryName;
 
-    // constructor -> might have to increment size if 53 isnt enough...
-    Category(const std::string& category) : mCategoryName(category), HashMap(53) {}
+        // default constructor
+        Category() : mCategoryName(), HashMap(53) {}
 
-    // destructor -> let HashMap destructor clean up!
+        // constructor -> might have to increment size if 53 isnt enough...
+        Category(const std::string category) : mCategoryName(category), HashMap(53) {}
 
-    // getters
+        // destructor -> let HashMap destructor clean up!
 
-    // setters
+        // getters
 
-    // public methods
+        // setters
 
-    friend bool operator!=(const Category& lhs, const Category& rhs);
+        // public methods
 
+        friend bool operator!=(const Category& lhs, const Category& rhs);
+
+};
+
+class Categories {
+
+    public:
+        SinglyLinkedList<Category>* mListCategories;
+        HashMap<std::string, bool>* mCheck;
+
+        // constructor
+        //Categories() : mListCategories(), mCheck(51) {}
+        Categories() {
+            mListCategories = new SinglyLinkedList<Category>();
+            mCheck = new HashMap<std::string, bool>(51);
+        }
+
+        // destructor
+        ~Categories() {
+            delete mListCategories;
+            delete mCheck;
+        }
+
+        // public methods
+        // none, just use each class individually
 };
 
 

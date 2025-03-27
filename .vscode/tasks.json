@@ -10,6 +10,7 @@
                 "-fansi-escape-codes",
                 "-std=c++11",
                 "-g",
+                "InventoryQueryTool.cpp",
                 "TestSinglyLinkedList.cpp",
                 "TestHashMap.cpp",
                 "main.cpp",
