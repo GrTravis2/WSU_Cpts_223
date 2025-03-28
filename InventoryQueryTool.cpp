@@ -1,13 +1,12 @@
 
-
-#include "InventoryQueryTool.hpp"
-#include "AmazonProduct.hpp"
-#include "Category.hpp"
-#include "SinglyLinkedList.hpp"
 #include <fstream>
 #include <stdexcept>
 #include <string>
-#include <utility>
+
+#include "InventoryQueryTool.hpp"
+#include "AmazonProduct.hpp"
+#include "SinglyLinkedList.hpp"
+
 
 // constructor
 InventoryQueryTool::InventoryQueryTool() : 
@@ -19,7 +18,6 @@ InventoryQueryTool::InventoryQueryTool() :
     std::string s = "";
     std::ifstream f;
     f.open(FILE);
-    AmazonProduct* view = mData;
 
     // dump header for overwrite later
     std::getline(f, mData[i].id, '\n');
@@ -41,7 +39,7 @@ InventoryQueryTool::InventoryQueryTool() :
             leading = mData[i].all.find(',', lagging + 1);
             mData[i].categories = mData[i].all.substr(lagging, leading - lagging); // save values
 
-            // parse string categories for insert into Categories class
+            // parse string categories for insert into Categories table
             leading = 0;
             while(leading != std::string::npos) {
                 lagging = leading + 1; // -> copy each category until end of string
@@ -65,11 +63,13 @@ InventoryQueryTool::InventoryQueryTool() :
                     pList->insertAtFront(mData[i].productName);
                     mCategories.insert(s, pList);
                 }
+
+                // insert id into main table
+                mSearch.insert(mData[i].id, &mData[i]);
             }
 
 
             i += 1; // step i to next value
-            view++;
         }
     }
 
@@ -79,6 +79,7 @@ InventoryQueryTool::InventoryQueryTool() :
 // destructor
 InventoryQueryTool::~InventoryQueryTool() {
     delete mData;
+    // other destructors will clean up hashtables
 }
 
 // getters
@@ -89,9 +90,9 @@ InventoryQueryTool::~InventoryQueryTool() {
 
 // -> print data if found, else print error not found
 void InventoryQueryTool::find(std::string key) {
-    AmazonProduct** pData = mSearch.find(key);
-    if(pData != nullptr && *pData != nullptr) {
-        std::cout << **pData;
+    AmazonProduct** pData = mSearch.find(key); // retrieve by key
+    if(pData != nullptr && *pData != nullptr) { 
+        std::cout << **pData; // check for found key and print if able
     } else {
         std::cout << "Inventory/Product not found." << std::endl;
     }
@@ -99,9 +100,12 @@ void InventoryQueryTool::find(std::string key) {
 
 // -> print contents of specified category
 void InventoryQueryTool::printCategory(std::string key_category) {
+
+    // retrieve list and print all contents if found
     SinglyLinkedList<std::string>** pList = mCategories.find(key_category);
 
     if(pList != nullptr) {
+        std::cout << "Printing all entries from category: " << key_category << std::endl;
         (*pList)->print();
     } else {
         std::cout << "Inventory/Product not found" << std::endl;

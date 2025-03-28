@@ -64,7 +64,7 @@ class HashMap {
         V* find(const K& key);
 
         // inserts key, value pair, returns true on success
-        bool insert(const K& key, const V& value);
+        bool insert( K key, V value);
 
         // returns true if key in hash map
         bool contains(const K& key);
@@ -94,20 +94,20 @@ int HashMap<K, V>::getSize() const {
 
 // public methods
 
-// dont forget quadratic probing >:(
-// -> handles find and insert given key
+
+// -> handles find and insert given key with quadratic probing!
 template <class K, class V>
 typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) { 
     unsigned int i, adjustedIdx, base;
     i = 0;
     base = mHash(key);
-    hashRow* cell = &mData[base % mSize];
+    hashRow* cell = &mData[base % mSize]; // get initial index before looping
 
     while (cell->key != key && !(cell->empty)) { // iterate until key match or empty cell
         adjustedIdx = (base + (i * i)) % mSize;
         cell = &mData[adjustedIdx];
 
-        assert(i++ < 10); // crash if too many insert attempts
+        assert(i++ < 15); // crash if too many insert attempts
     }
 
     return *cell; // returns record of matching key or empty cell for insert
@@ -115,9 +115,8 @@ typename HashMap<K, V>::hashRow& HashMap<K, V>::operator[](const K& key) {
 
 template <class K, class V>
 V* HashMap<K, V>::find(const K& key) {
-    //hashRow& cell = (*this)[key];
-    hashRow* pCell = &(*this)[key];
-    if (pCell->empty) {
+    hashRow* pCell = &(*this)[key]; // retrieve by key
+    if (pCell->empty) { // check if found and return matching ptr
         return nullptr;
     } else {
         return &pCell->data;
@@ -125,16 +124,16 @@ V* HashMap<K, V>::find(const K& key) {
 }
 
 template <class K, class V>
-bool HashMap<K, V>::insert(const K& key, const V& value) {
-    hashRow& cell = (*this)[key];
+bool HashMap<K, V>::insert( K key, V value) {
+    hashRow& cell = (*this)[key]; // retrieve by key
     bool ok = false;
 
-    if (cell.empty) {
+    if (cell.empty) { // if cell is not already used, assign!
         cell.key = key;
         cell.data = value;
         cell.empty = false;
 
-        ok = true;
+        ok = true; // make sure to return success
     }
 
     return ok;
@@ -151,7 +150,7 @@ bool HashMap<K, V>::contains(const K& key) { // -> returns true if key in hash m
 template <class K, class V>
 void HashMap<K, V>::print() const { // -> prints contents of hashmap to console
     for (int i = 0; i < mSize; i++) { 
-       if (!mData[i].empty) {
+       if (!mData[i].empty) { // print all non-empty cells!
             std::cout << mData[i].key << ", " << mData[i].data << std::endl;
         }
     }

@@ -50,25 +50,12 @@ CMD evalCommand(string line)
     return cmd;
 }
 
-/*
-void bootStrap()
-{
-    
-    // TODO: Do all your bootstrap operations here
-    // example: reading from CSV and initializing the data structures
-    // Don't dump all code into this single function
-    // use proper programming practices
-
-
-}
-    */
-
 int main(int argc, char const *argv[])
 {
 
     // testing entry points!
-    TestSinglyLinkedList().runTests();
-    TestHashMap().runTests();
+    //TestSinglyLinkedList().runTests();
+    //TestHashMap().runTests();
 
     InventoryQueryTool inventory;
     CMD cmd = NONE;
@@ -79,7 +66,6 @@ int main(int argc, char const *argv[])
 
     
     string line, arg;
-    //bootStrap();
     while (getline(cin, line) && line != ":quit")
     {
 
@@ -112,8 +98,6 @@ int main(int argc, char const *argv[])
                 break;
         }
     }
-
     
-
     return 0;
 }

@@ -2,10 +2,8 @@
 #define INVENTORY_QUERY_TOOL_H
 
 #include <string>
-#include <fstream>
 
 #include "AmazonProduct.hpp"
-#include "Category.hpp"
 #include "HashMap.hpp"
 #include "SinglyLinkedList.hpp"
 
@@ -17,7 +15,8 @@ class InventoryQueryTool {
     private:
         AmazonProduct* mData; // raw data referenced by hashmaps
         HashMap<std::string, AmazonProduct*> mSearch; // main table for searching raw product id
-        //Categories mCategories; // list of categories containing individual maps
+
+        // hash tables with separate chaining for product names within the category
         HashMap<std::string, SinglyLinkedList<std::string>* > mCategories;
 
         // private methods

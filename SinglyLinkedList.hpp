@@ -177,6 +177,8 @@ void SinglyLinkedList<T>::print() {
 }
 
 // private methods
+
+// recursively delete list - destructor helper
 template <class T>
 void SinglyLinkedList<T>::deleteList(ListNode<T>* pNode) {
     if (pNode != nullptr) {

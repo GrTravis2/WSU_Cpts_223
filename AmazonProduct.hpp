@@ -8,19 +8,17 @@ class AmazonProduct {
 
     public:
         std::string id, productName, categories, all;
-        /* upcCode, listPrice, sellingPrice, quantity, modelNum, about,
-        spec, technicals, weight, dimensions, image, variants, sku,
-        url, stock, details, dimensions2, color, ingrediants, directions, isSeller,
-        sizeQtyVariant, description; */
 
         // constructor
         AmazonProduct() {
+            // allocate ahead of time to help with malloc load
             id.reserve(33);
             productName.reserve(150);
             categories.reserve(100);
             all.reserve(100);
-        }; // set all to default and assign individually during parse
+        };
 
+        // print all data to console for find operation
         friend std::ostream& operator<<(std::ostream& lhs, AmazonProduct& rhs) {
             lhs << rhs.all << std::endl;
 
