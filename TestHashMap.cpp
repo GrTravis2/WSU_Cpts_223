@@ -92,6 +92,7 @@ TestHashMap& TestHashMap::testPrint() {
 
     // flip half of the cells to not empty, print all **empty** cells to test
     for (int i = 0; i < mSize; i++) {
+        mData[i].key = "key",
         mData[i].data = i;
         mData[i].empty = (i % 2 == 0) ? false : true;
     }

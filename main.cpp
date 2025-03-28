@@ -50,11 +50,10 @@ CMD evalCommand(string line)
     return cmd;
 }
 
+/*
 void bootStrap()
 {
-    cout << "\n Welcome to Amazon Inventory Query System" << endl;
-    cout << " enter :quit to exit. or :help to list supported commands." << endl;
-    cout << "\n> ";
+    
     // TODO: Do all your bootstrap operations here
     // example: reading from CSV and initializing the data structures
     // Don't dump all code into this single function
@@ -62,6 +61,7 @@ void bootStrap()
 
 
 }
+    */
 
 int main(int argc, char const *argv[])
 {
@@ -73,9 +73,13 @@ int main(int argc, char const *argv[])
     InventoryQueryTool inventory;
     CMD cmd = NONE;
 
+    cout << "\n Welcome to Amazon Inventory Query System" << endl;
+    cout << " enter :quit to exit. or :help to list supported commands." << endl;
+    cout << "\n> ";
+
     
     string line, arg;
-    bootStrap();
+    //bootStrap();
     while (getline(cin, line) && line != ":quit")
     {
         if (validCommand(line))

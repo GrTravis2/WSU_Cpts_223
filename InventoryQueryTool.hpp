@@ -10,7 +10,7 @@
 #include "SinglyLinkedList.hpp"
 
 #define TABLE_SIZE 10002 // fixed size of data set
-#define FILE "marketing_sample_for_amazon_com-ecommerce__20200101_20200131__10k_data.csv"
+#define FILE "AmazonData_Clean.csv"
 
 class InventoryQueryTool {
 

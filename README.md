@@ -18,4 +18,11 @@ The Amazon inventory query tool needs to support two search operations with the 
         - to maxmize code reusability I should also be able to reuse the hash map for several uses consisting of (product id key, */& data class) which can be used in the main product table as for finding, and for the category tables as a hash set - set invalid ptr to nullptr as not been inserted value :\)
         - note that since there will be several structures referencing existing data classes I think I will also need to hold the original data in a stand alone structure, likely an array since the data is of a fixed size
 
+## Cleaning the Data Set
+- Due to the number of fields in each entry and the inconsistency of characters used in each entry I elected to pre-process the data to simplify the program and it's output. There were a few common issues worth noting that influenced how I cleaned the data for the application:
+    - Delimiters sometimes in the middle of data fields
+        - while identifying ',' characters within a field is not too difficult, there are not many other consistent characters to split on. Double quotes (' " ' ) are sometimes available, but that is also inconsistent! To prevent the complexity from growing unneccessarily I removed commas from within the category field and wrapped the product name in quotations. This allows faster and simpler parsing code!
+    - Excessively long strings leading to heap allocation failures
+        - After parsing many fields from the data set I ran into intermittent issues with long strings, to help free up memory for the hash tables I have decided to remove data fields unneccessary to the program requirements. Simplifying the data will reduce memory usage, speed up program loading, and also simplify the data printed for the end user.
+
 

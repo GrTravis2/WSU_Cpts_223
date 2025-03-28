@@ -26,50 +26,29 @@ InventoryQueryTool::InventoryQueryTool() :
     if (f.is_open()) {
         while (f.peek() != EOF) {
 
-            /*
-            // read into each field
-            std::getline(f, mData[i].id, ',');
-            std::getline(f, mData[i].productName, ',');
-            std::getline(f, mData[i].brandName, ',');
-            std::getline(f, mData[i].Asin, ',');
-            std::getline(f, mData[i].categories, '"'); // dulpicate in order to
-            std::getline(f, mData[i].categories, '"'); // overwrite junk before "
-            std::getline(f, mData[i++].rest, '\n'); // dump last of data into str
-
-            */
-
             // read whole obj as whole line for printing, parse out needed fields
             std::getline(f, mData[i].all, '\n');
             leading = mData[i].all.find(',');
             mData[i].id = mData[i].all.substr(lagging, leading - lagging); // load id value
-            lagging = ++leading;
-            leading = mData[i].all.find(',', lagging);
+            lagging = leading + 2; // skip over the ,"
+            leading = mData[i].all.find('\"', lagging + 1);
             mData[i].productName = mData[i].all.substr(lagging, leading); // load product name
 
-            // advance until categories is accessible
-            lagging = ++leading;
-            leading = mData[i].all.find(',', lagging); // step to brand name
-            lagging = ++leading;
-            leading = mData[i].all.find(',', lagging); // step to Asin
-            lagging = ++leading;
-            leading = mData[i].all.find('\"', lagging); // step to front of categories field
-            lagging = ++leading;
-            leading = mData[i].all.find('\"', lagging); // step to end of categories field before assigning
+            leading = mData[i].all.find(',', lagging + 1);
             mData[i].categories = mData[i].all.substr(lagging, leading - lagging); // save values
 
             // parse string categories for insert into Categories class
             leading = 0;
             Category* cat = new Category(s);
             while(leading != std::string::npos) {
-                lagging = leading; // -> copy each category until end of string
+                lagging = leading + 1; // -> copy each category until end of string
                 leading = mData[i].categories.find('|', lagging);
 
-                // copy and clean whitespace around string before insertion
-                s = mData[i].categories.substr(lagging, leading++ - lagging);
-                try {if(s.at(leading++) == ' ') {}} catch (std::out_of_range) {
-                    leading = std::string::npos;
-                }
-                while(s.back() == ' ') { s.pop_back(); }
+                // copy and clean whitespace before/after string before insertion
+                while(mData[i].categories.at(lagging) == ' ' 
+                || mData[i].categories.at(lagging) == '\"') {lagging++;}
+                s = mData[i].categories.substr(lagging, leading - lagging);
+                while(s.back() == ' ' || s.back() == '\"') { s.pop_back(); }
 
                 // record category to save other products by category in the future
                 if (!mCategories.mCheck->contains(s)) { // if already recorded, skip
@@ -83,39 +62,6 @@ InventoryQueryTool::InventoryQueryTool() :
 
 
             i += 1; // step i to next value
-
-            /*
-            std::getline(f, mData[i].upcCode, ','); // same here, call twice to skip
-            std::getline(f, mData[i].upcCode, ','); // the extra comma
-            std::getline(f, mData[i].listPrice, ',');
-            std::getline(f, mData[i].sellingPrice, ',');
-            std::getline(f, mData[i].quantity, ',');
-            std::getline(f, mData[i].modelNum, ',');
-            std::getline(f, mData[i].about, '"'); // dulpicate in order to
-            std::getline(f, mData[i].about, '"'); // overwrite junk before "
-            std::getline(f, mData[i].spec, ','); // same here, call twice to skip
-            std::getline(f, mData[i].spec, ','); // the extra comma
-            std::getline(f, mData[i].technicals, '"');
-            std::getline(f, mData[i].technicals, '"');
-            std::getline(f, mData[i].weight, ',');
-            std::getline(f, mData[i].weight, ',');
-            std::getline(f, mData[i].dimensions, ',');
-            std::getline(f, mData[i].image, ',');
-            std::getline(f, mData[i].variants, ',');
-            std::getline(f, mData[i].sku, ',');
-            std::getline(f, mData[i].url, ',');
-            std::getline(f, mData[i].stock, ',');
-            std::getline(f, mData[i].details, ',');
-            std::getline(f, mData[i].dimensions2, ',');
-            std::getline(f, mData[i].color, ',');
-            std::getline(f, mData[i].ingrediants, ',');
-            std::getline(f, mData[i].directions, ',');
-            std::getline(f, mData[i].isSeller, ',');
-            std::getline(f, mData[i].sizeQtyVariant, ',');
-            std::getline(f, mData[i++].description, '\n'); // endl
-            */
-            
-
         }
     }
 
