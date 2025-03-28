@@ -158,7 +158,9 @@ template <class T>
 T* SinglyLinkedList<T>::find(const T& data) { 
 
     ListNode<T>* pNode = mpHead; // traverse list until end or value found
-    while (pNode != nullptr && pNode->getData() != data) { pNode = pNode->getNextPtr(); }
+    while (pNode != nullptr && pNode->getData() != data) {
+        pNode = pNode->getNextPtr(); 
+    }
 
     return &pNode->getData();
 }
