@@ -14,7 +14,12 @@ class AmazonProduct {
         sizeQtyVariant, description; */
 
         // constructor
-        AmazonProduct() {}; // set all to default and assign individually during parse
+        AmazonProduct() {
+            id.reserve(33);
+            productName.reserve(150);
+            categories.reserve(100);
+            all.reserve(100);
+        }; // set all to default and assign individually during parse
 
         friend std::ostream& operator<<(std::ostream& lhs, AmazonProduct& rhs) {
             lhs << rhs.all << std::endl;

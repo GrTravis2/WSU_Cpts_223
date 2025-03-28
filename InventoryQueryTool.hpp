@@ -9,7 +9,7 @@
 #include "HashMap.hpp"
 #include "SinglyLinkedList.hpp"
 
-#define TABLE_SIZE 10002 // fixed size of data set
+#define TABLE_SIZE 20011 // fixed size of data set
 #define FILE "AmazonData_Clean.csv"
 
 class InventoryQueryTool {
@@ -35,8 +35,8 @@ class InventoryQueryTool {
         // setters
 
         // public methods
-        void find(const std::string& key); // -> print data if found, else print error not found
-        void printCategory(const std::string& key_category); // -> print contents of specified category
+        void find(std::string key); // -> print data if found, else print error not found
+        void printCategory(std::string key_category); // -> print contents of specified category
 };
 
 #endif

@@ -11,8 +11,8 @@
 
 // constructor
 InventoryQueryTool::InventoryQueryTool() : 
-    mSearch(10 * 2), mCategories(10 * 2) { // was  TABLE_SIZE, now 10
-    mData = new AmazonProduct[10]; // was TABLE_SIZE -> 10
+    mSearch(TABLE_SIZE), mCategories(TABLE_SIZE) { // was  TABLE_SIZE, now 10
+    mData = new AmazonProduct[10002]; // exactly the number of rows in csv
 
     int i, leading, lagging; // init vars and file
     i = leading = lagging = 0;
@@ -29,11 +29,11 @@ InventoryQueryTool::InventoryQueryTool() :
             leading = lagging = 0;
 
             // read whole obj as whole line for printing, parse out needed fields
+            mData[i].all.reserve(100);
             std::getline(f, mData[i].all, '\n');
             leading = mData[i].all.find(',');
             mData[i].id = mData[i].all.substr(lagging, leading - lagging); // load id value
             lagging = leading + 2; // skip over the ,"
-            //while(mData[i].all[leading] != '\"') { lagging++; }
             leading = mData[i].all.find('\"', lagging + 1);
             mData[i].productName = mData[i].all.substr(lagging, leading); // load product name
             lagging = leading + 1;
@@ -48,31 +48,23 @@ InventoryQueryTool::InventoryQueryTool() :
                 leading = mData[i].categories.find('|', lagging);
 
                 // copy and clean whitespace before/after string before insertion
-                while(mData[i].categories.at(lagging) == ' ' 
-                || mData[i].categories.at(lagging) == '\"'
-                || mData[i].categories.at(lagging) == ',') {lagging++;}
+                try {
+                    while(mData[i].categories.at(lagging) == ' ' 
+                    || mData[i].categories.at(lagging) == '\"'
+                    || mData[i].categories.at(lagging) == ',') {lagging++;}
+                } catch (std::out_of_range) {}
                 s = mData[i].categories.substr(lagging, leading - lagging);
                 while(s.back() == ' ' || s.back() == '\"') { s.pop_back(); }
 
-                // record category to save other products by category in the future
-                /*Category* cat = new Category(s);
-                if (!mCategories.mCheck->contains(s)) { // if already recorded, skip
-                    mCategories.mCheck->insert(s, true);
-                    mCategories.mListCategories->insertAtFront(*cat);
-                }
-                */
-
                 // search the hash table and insert product into correct category list
                 if (mCategories.contains(s)) {
+                    mData[i].productName.reserve(50);
                     (*mCategories.find(s))->insertAtFront(mData[i].productName);
                 } else {
                     SinglyLinkedList<std::string>* pList = new SinglyLinkedList<std::string>();
                     pList->insertAtFront(mData[i].productName);
                     mCategories.insert(s, pList);
                 }
-
-                
-                //mCategories.mListCategories->find(*cat)->insert(mData[i].id, mData[i].productName);
             }
 
 
@@ -96,7 +88,7 @@ InventoryQueryTool::~InventoryQueryTool() {
 // public methods
 
 // -> print data if found, else print error not found
-void InventoryQueryTool::find(const std::string& key) {
+void InventoryQueryTool::find(std::string key) {
     AmazonProduct** pData = mSearch.find(key);
     if(pData != nullptr && *pData != nullptr) {
         std::cout << **pData;
@@ -106,11 +98,11 @@ void InventoryQueryTool::find(const std::string& key) {
 }
 
 // -> print contents of specified category
-void InventoryQueryTool::printCategory(const std::string& key_category) {
-    SinglyLinkedList<std::string>* pList = *mCategories.find(key_category);
+void InventoryQueryTool::printCategory(std::string key_category) {
+    SinglyLinkedList<std::string>** pList = mCategories.find(key_category);
 
     if(pList != nullptr) {
-        pList->print();
+        (*pList)->print();
     } else {
         std::cout << "Inventory/Product not found" << std::endl;
     }

@@ -82,6 +82,7 @@ int main(int argc, char const *argv[])
     //bootStrap();
     while (getline(cin, line) && line != ":quit")
     {
+
         if (validCommand(line))
         {
             cmd = evalCommand(line);
@@ -95,7 +96,7 @@ int main(int argc, char const *argv[])
 
         // parse arg and pass to correct function
         // copy string after space, should grab everything after command type
-        arg = line.substr(line.find(' '));
+        arg = line.substr(line.find(' ') + 1);
 
         switch(cmd) {
             case NONE:
@@ -105,6 +106,7 @@ int main(int argc, char const *argv[])
                 break;
             case LIST:
                 inventory.printCategory(arg);
+                std::cout << std::endl << "> ";
                 break;
             default:
                 break;
