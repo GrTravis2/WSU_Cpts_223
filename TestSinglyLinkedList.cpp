@@ -8,7 +8,11 @@
 void TestSinglyLinkedList::runTests() {
 
     // chain all tests -> will crash if any test fails
-    testInsertAtFront().testFind().testGetSize();
+    testInsertAtFront()
+    .testFind()
+    .testGetSize()
+    .testInsertionSort()
+    .testMergeSort();
 }
 
 // method tests set up for method chaining
@@ -62,6 +66,57 @@ TestSinglyLinkedList& TestSinglyLinkedList::testPrint() {
     SinglyLinkedList<int> t;
     for(int i = 0; i < 10; i++) { t.insertAtFront(i); }
     t.print();
+
+    return *this;
+}
+
+
+TestSinglyLinkedList& TestSinglyLinkedList::testInsertionSort() {
+
+    // list has sequence -> 9 .. 0
+    SinglyLinkedList<int> t;
+    for(int i = 0; i < 10; i++) { t.insertAtFront(i); }
+
+    std::cout
+    << "** INSERTION SORT - VISUAL TEST ONLY **" << std::endl
+    << "** MAKE SURE OUTPUT IN ASCENDING ORDER **" << std::endl;
+
+    t.insertionSort(true);
+
+    // list has sequence -> 9 .. 0
+    SinglyLinkedList<int> t2;
+    for(int i = 0; i < 10; i++) { t2.insertAtFront(i); }
+
+    std::cout
+    << "** INSERTION SORT - VISUAL TEST ONLY **" << std::endl
+    << "** MAKE SURE OUTPUT IN DESCENDING ORDER **" << std::endl;
+
+    t.insertionSort(false);
+
+    return *this;
+}
+
+TestSinglyLinkedList& TestSinglyLinkedList::testMergeSort() {
+
+    // list has sequence -> 9 .. 0
+    SinglyLinkedList<int> t;
+    for(int i = 0; i < 10; i++) { t.insertAtFront(i); }
+
+    std::cout
+    << "** MERGE SORT - VISUAL TEST ONLY **" << std::endl
+    << "** MAKE SURE OUTPUT IN ASCENDING ORDER **" << std::endl;
+
+    t.mergeSort(true);
+
+    // list has sequence -> 9 .. 0
+    SinglyLinkedList<int> t2;
+    for(int i = 0; i < 10; i++) { t2.insertAtFront(i); }
+
+    std::cout
+    << "** MERGE SORT - VISUAL TEST ONLY **" << std::endl
+    << "** MAKE SURE OUTPUT IN DESCENDING ORDER **" << std::endl;
+
+    t.mergeSort(false);
 
     return *this;
 }

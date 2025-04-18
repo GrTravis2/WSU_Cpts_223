@@ -1,8 +1,11 @@
 #ifndef SINGLY_LINKED_LIST_H
 #define SINGLY_LINKED_LIST_H
 
+#include <cmath>
 #include <iostream>
 #include <assert.h>
+#include <cmath>
+#include <functional>
 
 // ** linked list node class **
 
@@ -74,6 +77,61 @@ ListNode<T>& ListNode<T>::setNextPtr(ListNode* nextPtr) {
     return *this; // return self for method chaining 
 }
 
+// ** T comparator for sorting **
+/*
+template <class T>
+class Comparator { // abstract base class for passing into sorting funcs
+    public:
+
+    // constructor
+    Comparator();
+
+    // comparison
+    virtual bool operator()(const T& lhs, const T& rhs) = 0;
+};
+
+// ascending order comparator
+template <class T>
+class ascendingOrder : public Comparator<T> {
+
+    public:
+
+    // constructor
+    ascendingOrder();
+
+    // comparison
+    bool operator()(const T& lhs, const T& rhs) {
+        return lhs < rhs;
+    }
+};
+
+// ascending order comparator
+template <class T>
+class descendingOrder : public Comparator<T> {
+
+    // constructor
+    descendingOrder();
+
+    // comparison
+    bool operator()(const T& lhs, const T& rhs) {
+        return !(lhs < rhs);
+    }
+};
+
+template <class T>
+struct ascendingOrder {
+    bool operator()(T& lhs, T& rhs) {
+        return lhs < rhs;
+    }
+};
+
+template <class T>
+struct descendingOrder {
+    bool operator()(T& lhs, T& rhs) {
+        return !(lhs < rhs);
+    }
+};
+*/
 // ** singly linked list class **
 
 template <class T>
@@ -85,6 +143,16 @@ class SinglyLinkedList {
 
         // private methods
         void deleteList(ListNode<T>* pNode);
+
+        // comparators
+        static bool ascendingOrder(const T& lhs, const T& rhs);
+        static bool descendingOrder(const T& lhs, const T& rhs);
+
+        // recursive insertion sort swap
+        void insertionSortHelper(T* arr, int index, bool (*fun)(const T&, const T&)); 
+
+        // recursive merge sort swap
+        T* mergeSortHelper(T* arr, int size, bool (*fun)(const T&, const T&));
 
 
     public:
@@ -105,6 +173,8 @@ class SinglyLinkedList {
         void insertAtFront(const T& data); // -> allocate and insert new node containing data
         T* find(const T& data); // -> return ptr to node matching data
         void print(); // -> print all data in list to console
+        void insertionSort(bool ascending); // -> insertion sort list and print contents
+        void mergeSort(bool ascending); // -> merge sort list and print contents
 
 
 };
@@ -176,6 +246,70 @@ void SinglyLinkedList<T>::print() {
     }
 }
 
+// comparators
+template<class T>
+bool SinglyLinkedList<T>::ascendingOrder(const T& lhs, const T& rhs) {
+    return lhs < rhs;
+}
+
+template <class T>
+bool SinglyLinkedList<T>::descendingOrder(const T& lhs, const T& rhs) {
+    return !(lhs < rhs);
+}
+
+template <class T>
+void SinglyLinkedList<T>::insertionSort(bool ascending) { // -> insertion sort list and print contents
+    // since we are just printing the results im going to create an array, print it, then discard
+    ListNode<T>* pNode = mpHead;
+    T* arr = new T[mSize]; // copy all list values to new array before sort
+    int i = 0;
+    while(pNode != nullptr) { // copy values into array until end
+        arr[i++] = pNode->getData();
+        pNode = pNode->getNextPtr();
+    }
+
+    bool (*method)(const T&, const T&) = ascending? ascendingOrder : descendingOrder;
+    // once array has been populated, start sorting from 2nd element
+    for (int i = 1; i < mSize; i++) {
+        insertionSortHelper(arr, i, method);
+    }
+    
+
+    // print contents of array
+    for(int i = 0; i < mSize; i++) {
+        std::cout << arr[i] << ",\n";
+    }
+
+    delete arr;
+}
+
+template <class T>
+void SinglyLinkedList<T>::mergeSort(bool ascending) { // -> merge sort list and print cotents
+    // since we are just printing the results, create an array, print it, then discard
+    ListNode<T>* pNode = mpHead;
+    T* arr = new T[mSize]; // copy all list values to new array before sort
+    int i = 0;
+    while(pNode != nullptr) { // copy values into array until end
+        arr[i++] = pNode->getData();
+        pNode = pNode->getNextPtr();
+    }
+
+    bool (*method)(const T&, const T&) = ascending? ascendingOrder : descendingOrder;
+
+    // once array has been populated, start sorting
+    T* result = mergeSortHelper(arr, mSize, method);
+
+
+    // print contents of array
+    for(int i = 0; i < mSize; i++) {
+        std::cout << result[i] << ",\n";
+    }
+
+    delete arr;
+    delete result;
+
+}
+
 // private methods
 
 // recursively delete list - destructor helper
@@ -184,6 +318,61 @@ void SinglyLinkedList<T>::deleteList(ListNode<T>* pNode) {
     if (pNode != nullptr) {
         deleteList(pNode->getNextPtr());
         delete pNode->getNextPtr();
+    }
+}
+
+template <class T>
+void SinglyLinkedList<T>::insertionSortHelper(T* arr, int index, bool (*fun)(const T&, const T&)) { // recursive insertion sort swap
+
+    // base case - if front of array hit or the elements are in order end!
+    if(index < 1 || fun(arr[index - 1], arr[index])) {
+        return;
+    } else {
+        T swap = arr[index]; // swap left and right elements
+        arr[index] = arr[index - 1];
+        arr[index - 1] = swap;
+        insertionSortHelper(arr, index - 1, fun); // call again until base case
+    }
+}
+
+// recursive merge sort swap
+
+template <class T>
+T* SinglyLinkedList<T>::mergeSortHelper(T* arr, int size, bool (*fun)(const T&, const T&)) {
+    if(size > 1){
+        int middle = std::floor(size / 2);
+        T* left = mergeSortHelper(arr, middle, fun);
+        T* right = mergeSortHelper(&arr[middle], size - middle, fun);
+
+        int i, j, k;   // process vars and result array
+        i = j = k = 0; // left[i]. right[j], and result[k]
+        T* result = new T[size];
+        while (i < middle && j < size - middle) { // loop until one array fully copied!
+            if(fun(left[i], right[j])){
+                result[k++] = left[i++]; // merge left arr value
+            } else {
+                result[k++] = right[j++]; // merge right arr value
+            }
+        }
+        // at this point one of the arrays will be fully processed, copy the other array!
+        if(i < middle) { // left array needs more work
+            while(i < middle) { result[k++] = left[i++]; }
+        } else { // right array must need more work
+            while(j < size - middle) { result[k++] = right[j++]; }
+        }
+        assert(i + j == size); // validate that all elements have been processed
+
+        // also dont forget to clean up smaller arrays...
+        delete left;
+        delete right;
+
+        return result;
+
+    } else { // base case -> return 1 element array
+        T* result = new T[size];
+        result[0] = arr[0];
+
+        return result;
     }
 }
 

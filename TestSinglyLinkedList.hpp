@@ -15,6 +15,9 @@ class TestSinglyLinkedList {
         TestSinglyLinkedList& testFind();
         TestSinglyLinkedList& testGetSize();
         TestSinglyLinkedList& testPrint();
+        TestSinglyLinkedList& testInsertionSort();
+        TestSinglyLinkedList& testMergeSort();
+
 
 
     public:
