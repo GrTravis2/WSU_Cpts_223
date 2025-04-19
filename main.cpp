@@ -55,8 +55,8 @@ int main(int argc, char const *argv[])
 
     // testing entry points!
     TestSinglyLinkedList().runTests();
-    //TestHashMap().runTests();
-/*
+    TestHashMap().runTests();
+
     InventoryQueryTool inventory;
     CMD cmd = NONE;
 
@@ -98,7 +98,6 @@ int main(int argc, char const *argv[])
                 break;
         }
     }
-        */
     
     return 0;
 }

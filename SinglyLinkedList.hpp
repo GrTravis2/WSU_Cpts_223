@@ -5,7 +5,6 @@
 #include <iostream>
 #include <assert.h>
 #include <cmath>
-#include <functional>
 
 // ** linked list node class **
 
@@ -19,7 +18,7 @@ class ListNode {
     public:
 
         // constructor
-        ListNode(const T& data);
+        ListNode(T& data);
 
         // destructor
         ~ListNode();
@@ -39,7 +38,7 @@ class ListNode {
 
 // constructor
 template <class T>
-ListNode<T>::ListNode(const T& data) {
+ListNode<T>::ListNode(T& data) {
     mData = data;
     mpNext = nullptr;
 }
@@ -77,61 +76,6 @@ ListNode<T>& ListNode<T>::setNextPtr(ListNode* nextPtr) {
     return *this; // return self for method chaining 
 }
 
-// ** T comparator for sorting **
-/*
-template <class T>
-class Comparator { // abstract base class for passing into sorting funcs
-    public:
-
-    // constructor
-    Comparator();
-
-    // comparison
-    virtual bool operator()(const T& lhs, const T& rhs) = 0;
-};
-
-// ascending order comparator
-template <class T>
-class ascendingOrder : public Comparator<T> {
-
-    public:
-
-    // constructor
-    ascendingOrder();
-
-    // comparison
-    bool operator()(const T& lhs, const T& rhs) {
-        return lhs < rhs;
-    }
-};
-
-// ascending order comparator
-template <class T>
-class descendingOrder : public Comparator<T> {
-
-    // constructor
-    descendingOrder();
-
-    // comparison
-    bool operator()(const T& lhs, const T& rhs) {
-        return !(lhs < rhs);
-    }
-};
-
-template <class T>
-struct ascendingOrder {
-    bool operator()(T& lhs, T& rhs) {
-        return lhs < rhs;
-    }
-};
-
-template <class T>
-struct descendingOrder {
-    bool operator()(T& lhs, T& rhs) {
-        return !(lhs < rhs);
-    }
-};
-*/
 // ** singly linked list class **
 
 template <class T>
@@ -170,12 +114,11 @@ class SinglyLinkedList {
         // setters
 
         // public methods
-        void insertAtFront(const T& data); // -> allocate and insert new node containing data
+        void insertAtFront(T& data); // -> allocate and insert new node containing data
         T* find(const T& data); // -> return ptr to node matching data
         void print(); // -> print all data in list to console
         void insertionSort(bool ascending); // -> insertion sort list and print contents
         void mergeSort(bool ascending); // -> merge sort list and print contents
-
 
 };
 
@@ -207,7 +150,7 @@ T& SinglyLinkedList<T>::front() const {
 
 // public methods
 template <class T>
-void SinglyLinkedList<T>::insertAtFront(const T& data) { // -> allocate and insert new node containing data
+void SinglyLinkedList<T>::insertAtFront(T& data) { // -> allocate and insert new node containing data
 
     // create new node and check for succesful allocation
     ListNode<T>* pNew = new ListNode<T>(data); 
@@ -234,6 +177,15 @@ T* SinglyLinkedList<T>::find(const T& data) {
 
     return &pNode->getData();
 }
+
+/*
+template <class T>
+std::ostream& operator<<(std::ostream& lhs, T& rhs) {
+    lhs << rhs;
+
+    return lhs;
+}
+    */
 
 // print all data in list to console, requires overloaded operator<<
 template <class T>

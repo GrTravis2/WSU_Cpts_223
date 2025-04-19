@@ -2,6 +2,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
+#include <iostream>
 
 #include "InventoryQueryTool.hpp"
 #include "AmazonProduct.hpp"
@@ -57,10 +59,12 @@ InventoryQueryTool::InventoryQueryTool() :
                 // search the hash table and insert product into correct category list
                 if (mCategories.contains(s)) {
                     mData[i].productName.reserve(50);
-                    (*mCategories.find(s))->insertAtFront(mData[i].productName);
+                    categoryPair p(mData[i].productName, mData[i].id);
+                    (*mCategories.find(s))->insertAtFront(p);
                 } else {
-                    SinglyLinkedList<std::string>* pList = new SinglyLinkedList<std::string>();
-                    pList->insertAtFront(mData[i].productName);
+                    SinglyLinkedList<categoryPair>* pList = new SinglyLinkedList<categoryPair>();
+                    categoryPair p(mData[i].productName, mData[i].id);
+                    pList->insertAtFront(p);
                     mCategories.insert(s, pList);
                 }
 
@@ -102,7 +106,7 @@ void InventoryQueryTool::find(std::string key) {
 void InventoryQueryTool::printCategory(std::string key_category) {
 
     // retrieve list and print all contents if found
-    SinglyLinkedList<std::string>** pList = mCategories.find(key_category);
+    SinglyLinkedList<categoryPair>** pList = mCategories.find(key_category);
 
     if(pList != nullptr) {
         std::cout << "Printing all entries from category: " << key_category << std::endl;
@@ -110,4 +114,45 @@ void InventoryQueryTool::printCategory(std::string key_category) {
     } else {
         std::cout << "Inventory/Product not found" << std::endl;
     }
+}
+
+// categoryPair subclass definitions
+
+// constructor
+InventoryQueryTool::categoryPair::categoryPair(std::string& name, std::string& price) {
+    name = name;
+    price = price;
+}
+
+// default constructor
+InventoryQueryTool::categoryPair::categoryPair() {
+    name = price = "";
+}
+
+// assignment operator
+InventoryQueryTool::categoryPair& InventoryQueryTool::categoryPair::operator=(categoryPair& other) {
+    this->name = other.getName();
+    this->price = other.getPrice();
+}
+
+// getters
+std::string& InventoryQueryTool::categoryPair::getName() {
+    return name;
+}
+std::string& InventoryQueryTool::categoryPair::getPrice() {
+    return price;
+}
+
+// overloaded operators -> needed for printing and sorting!
+
+// for list print operations 
+std::ostream& operator<<(std::ostream& lhs, InventoryQueryTool::categoryPair& rhs) {
+    lhs << rhs.getName();
+
+    return lhs;
+}
+
+// for sorting operations
+bool operator<(InventoryQueryTool::categoryPair& lhs, InventoryQueryTool::categoryPair& rhs) {
+    return lhs.getPrice() < rhs.getPrice();
 }
