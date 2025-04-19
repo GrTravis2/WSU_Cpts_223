@@ -89,14 +89,14 @@ class SinglyLinkedList {
         void deleteList(ListNode<T>* pNode);
 
         // comparators
-        static bool ascendingOrder(const T& lhs, const T& rhs);
-        static bool descendingOrder(const T& lhs, const T& rhs);
+        static bool ascendingOrder(T& lhs,T& rhs);
+        static bool descendingOrder(T& lhs, T& rhs);
 
         // recursive insertion sort swap
-        void insertionSortHelper(T* arr, int index, bool (*fun)(const T&, const T&)); 
+        void insertionSortHelper(T* arr, int index, bool (*fun)(T&, T&)); 
 
         // recursive merge sort swap
-        T* mergeSortHelper(T* arr, int size, bool (*fun)(const T&, const T&));
+        T* mergeSortHelper(T* arr, int size, bool (*fun)(T&, T&));
 
 
     public:
@@ -178,15 +178,6 @@ T* SinglyLinkedList<T>::find(const T& data) {
     return &pNode->getData();
 }
 
-/*
-template <class T>
-std::ostream& operator<<(std::ostream& lhs, T& rhs) {
-    lhs << rhs;
-
-    return lhs;
-}
-    */
-
 // print all data in list to console, requires overloaded operator<<
 template <class T>
 void SinglyLinkedList<T>::print() { 
@@ -200,12 +191,12 @@ void SinglyLinkedList<T>::print() {
 
 // comparators
 template<class T>
-bool SinglyLinkedList<T>::ascendingOrder(const T& lhs, const T& rhs) {
+bool SinglyLinkedList<T>::ascendingOrder(T& lhs, T& rhs) {
     return lhs < rhs;
 }
 
 template <class T>
-bool SinglyLinkedList<T>::descendingOrder(const T& lhs, const T& rhs) {
+bool SinglyLinkedList<T>::descendingOrder(T& lhs, T& rhs) {
     return !(lhs < rhs);
 }
 
@@ -220,7 +211,7 @@ void SinglyLinkedList<T>::insertionSort(bool ascending) { // -> insertion sort l
         pNode = pNode->getNextPtr();
     }
 
-    bool (*method)(const T&, const T&) = ascending? ascendingOrder : descendingOrder;
+    bool (*method)(T&, T&) = ascending? ascendingOrder : descendingOrder;
     // once array has been populated, start sorting from 2nd element
     for (int i = 1; i < mSize; i++) {
         insertionSortHelper(arr, i, method);
@@ -246,7 +237,7 @@ void SinglyLinkedList<T>::mergeSort(bool ascending) { // -> merge sort list and 
         pNode = pNode->getNextPtr();
     }
 
-    bool (*method)(const T&, const T&) = ascending? ascendingOrder : descendingOrder;
+    bool (*method)(T&, T&) = ascending? ascendingOrder : descendingOrder;
 
     // once array has been populated, start sorting
     T* result = mergeSortHelper(arr, mSize, method);
@@ -274,7 +265,7 @@ void SinglyLinkedList<T>::deleteList(ListNode<T>* pNode) {
 }
 
 template <class T>
-void SinglyLinkedList<T>::insertionSortHelper(T* arr, int index, bool (*fun)(const T&, const T&)) { // recursive insertion sort swap
+void SinglyLinkedList<T>::insertionSortHelper(T* arr, int index, bool (*fun)(T&, T&)) { // recursive insertion sort swap
 
     // base case - if front of array hit or the elements are in order end!
     if(index < 1 || fun(arr[index - 1], arr[index])) {
@@ -290,7 +281,7 @@ void SinglyLinkedList<T>::insertionSortHelper(T* arr, int index, bool (*fun)(con
 // recursive merge sort swap
 
 template <class T>
-T* SinglyLinkedList<T>::mergeSortHelper(T* arr, int size, bool (*fun)(const T&, const T&)) {
+T* SinglyLinkedList<T>::mergeSortHelper(T* arr, int size, bool (*fun)(T&, T&)) {
     if(size > 1){
         int middle = std::floor(size / 2);
         T* left = mergeSortHelper(arr, middle, fun);

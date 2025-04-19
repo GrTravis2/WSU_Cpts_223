@@ -103,14 +103,19 @@ void InventoryQueryTool::find(std::string key) {
 }
 
 // -> print contents of specified category
-void InventoryQueryTool::printCategory(std::string key_category) {
+void InventoryQueryTool::printCategory(std::string key_category, bool insertion, bool ascending) {
 
     // retrieve list and print all contents if found
     SinglyLinkedList<categoryPair>** pList = mCategories.find(key_category);
 
     if(pList != nullptr) {
         std::cout << "Printing all entries from category: " << key_category << std::endl;
-        (*pList)->print();
+        if (insertion) {
+            (*pList)->insertionSort(ascending);
+        } else {
+            (*pList)->mergeSort(ascending);
+        }
+        
     } else {
         std::cout << "Inventory/Product not found" << std::endl;
     }
@@ -126,20 +131,24 @@ InventoryQueryTool::categoryPair::categoryPair(std::string& name, std::string& p
 
 // default constructor
 InventoryQueryTool::categoryPair::categoryPair() {
-    name = price = "";
+    name = "";
+    price = "";
 }
 
 // assignment operator
 InventoryQueryTool::categoryPair& InventoryQueryTool::categoryPair::operator=(categoryPair& other) {
-    this->name = other.getName();
-    this->price = other.getPrice();
+
+        name = other.getName();
+        price = other.getPrice();
+
+    return other;
 }
 
 // getters
-std::string& InventoryQueryTool::categoryPair::getName() {
+std::string InventoryQueryTool::categoryPair::getName() {
     return name;
 }
-std::string& InventoryQueryTool::categoryPair::getPrice() {
+std::string InventoryQueryTool::categoryPair::getPrice() {
     return price;
 }
 

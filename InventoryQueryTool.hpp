@@ -39,8 +39,8 @@ class InventoryQueryTool {
                 categoryPair& operator=(categoryPair& other);
 
                 // getters
-                std::string& getName();
-                std::string& getPrice();
+                std::string getName();
+                std::string getPrice();
 
 
         };
@@ -57,7 +57,9 @@ class InventoryQueryTool {
 
         // public methods
         void find(std::string key); // -> print data if found, else print error not found
-        void printCategory(std::string key_category); // -> print contents of specified category
+
+        // print contents of specified category
+        void printCategory(std::string key_category, bool insertion, bool ascending);
 
     private:
         AmazonProduct* mData; // raw data referenced by hashmaps
@@ -75,6 +77,6 @@ class InventoryQueryTool {
 std::ostream& operator<<(std::ostream& lhs, InventoryQueryTool::categoryPair& rhs);
 
 // for sorting operations
-bool operator<(const InventoryQueryTool::categoryPair& lhs, const InventoryQueryTool::categoryPair& rhs);
+bool operator<(InventoryQueryTool::categoryPair& lhs, InventoryQueryTool::categoryPair& rhs);
 
 #endif
