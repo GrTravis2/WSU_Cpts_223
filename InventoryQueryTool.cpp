@@ -2,7 +2,6 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <iostream>
 
 #include "InventoryQueryTool.hpp"
