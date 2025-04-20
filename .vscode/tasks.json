@@ -13,6 +13,8 @@
                 "InventoryQueryTool.cpp",
                 "TestSinglyLinkedList.cpp",
                 "TestHashMap.cpp",
+                "TestArgParse.cpp",
+                "ArgParse.cpp",
                 "main.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"

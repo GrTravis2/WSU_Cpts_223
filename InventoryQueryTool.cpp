@@ -13,7 +13,8 @@
 // constructor
 InventoryQueryTool::InventoryQueryTool() : 
     mSearch(TABLE_SIZE), mCategories(TABLE_SIZE) { // was  TABLE_SIZE, now 10
-    mData = new AmazonProduct[10002]; // exactly the number of rows in csv
+    //mData = new AmazonProduct[10002]; // exactly the number of rows in csv
+    mData = new AmazonProduct[100];
 
     int i, leading, lagging; // init vars and file
     i = leading = lagging = 0;
@@ -25,7 +26,8 @@ InventoryQueryTool::InventoryQueryTool() :
     std::getline(f, mData[i].id, '\n');
 
     if (f.is_open()) {
-        while (f.peek() != EOF) {
+        while (i < 100) {
+        //while (f.peek() != EOF) {
             leading = lagging = 0;
 
             // read whole obj as whole line for printing, parse out needed fields
