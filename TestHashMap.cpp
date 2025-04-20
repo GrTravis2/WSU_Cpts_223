@@ -1,6 +1,6 @@
 
 #include "TestHashMap.hpp"
-#include <cassert>
+#include <assert.h>
 #include <string>
 
 // constructor
