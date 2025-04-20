@@ -11,6 +11,7 @@
                 "-std=c++11",
                 "-g",
                 "InventoryQueryTool.cpp",
+                "AmazonProduct.cpp",
                 "TestSinglyLinkedList.cpp",
                 "TestHashMap.cpp",
                 "TestArgParse.cpp",

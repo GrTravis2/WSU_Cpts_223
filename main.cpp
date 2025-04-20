@@ -74,8 +74,11 @@ int main(int argc, char const *argv[])
                 break;
         }
 
-        inventory.printCategory(arg,insertion,ascending);
+        if(cmd != NONE | cmd != FIND) {
+            inventory.printCategory(arg,insertion,ascending);
+        }
         std::cout << std::endl << "> ";
+        line = arg = "";
 
     }
     

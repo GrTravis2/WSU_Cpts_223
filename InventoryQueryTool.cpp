@@ -18,11 +18,13 @@ InventoryQueryTool::InventoryQueryTool() :
     int i, leading, lagging; // init vars and file
     i = leading = lagging = 0;
     std::string s = "";
+    std::string buffer = "";
     std::ifstream f;
     f.open(FILE);
 
     // dump header for overwrite later
-    std::getline(f, mData[i].id, '\n');
+    //std::getline(f, mData[i].id, '\n');
+    std::getline(f, buffer, '\n');
 
     if (f.is_open()) {
         while (i < 100) {
@@ -30,47 +32,61 @@ InventoryQueryTool::InventoryQueryTool() :
             leading = lagging = 0;
 
             // read whole obj as whole line for printing, parse out needed fields
-            mData[i].all.reserve(100);
-            std::getline(f, mData[i].all, '\n');
-            leading = mData[i].all.find(',');
-            mData[i].id = mData[i].all.substr(lagging, leading - lagging); // load id value
+            //mData[i].all.reserve(100);
+            std::getline(f, s, '\n');
+            mData[i].setAll(s);
+            leading = mData[i].getAll().find(',');
+
+            // load id value
+            buffer = s.substr(lagging, leading - lagging);
+            mData[i].setId(buffer); 
+
             lagging = leading + 2; // skip over the ,"
-            leading = mData[i].all.find('\"', lagging + 1);
-            mData[i].productName = mData[i].all.substr(lagging, leading); // load product name
+
+            // load product name
+            leading = s.find('\"', lagging + 1);
+            buffer = s.substr(lagging, leading - lagging);
+            mData[i].setProductName(buffer);
             lagging = leading + 1;
 
-            leading = mData[i].all.find(',', lagging + 1);
-            mData[i].categories = mData[i].all.substr(lagging, leading - lagging); // save values
+            // save category values
+            leading = s.find(',', lagging + 1);
+            buffer = s.substr(lagging, leading - lagging);
+            mData[i].setCategories(buffer);
 
             // parse string categories for insert into Categories table
             leading = 0;
             while(leading != std::string::npos) {
                 lagging = leading + 1; // -> copy each category until end of string
-                leading = mData[i].categories.find('|', lagging);
+                leading = buffer.find('|', lagging);
 
                 // copy and clean whitespace before/after string before insertion
                 try {
-                    while(mData[i].categories.at(lagging) == ' ' 
-                    || mData[i].categories.at(lagging) == '\"'
-                    || mData[i].categories.at(lagging) == ',') {lagging++;}
+                    while(buffer.at(lagging) == ' ' 
+                    || buffer.at(lagging) == '\"'
+                    || buffer.at(lagging) == ',') {lagging++;}
                 } catch (std::out_of_range) {}
-                s = mData[i].categories.substr(lagging, leading - lagging);
+                s = buffer.substr(lagging, leading - lagging);
                 while(s.back() == ' ' || s.back() == '\"') { s.pop_back(); }
 
                 // search the hash table and insert product into correct category list
+
+                // temp values
+                std::string name = mData[i].getProductName();
+                std::string id = mData[i].getId();
                 if (mCategories.contains(s)) {
-                    mData[i].productName.reserve(50);
-                    categoryPair p(mData[i].productName, mData[i].id);
+                    //mData[i].productName.reserve(50);
+                    categoryPair p(name, id);
                     (*mCategories.find(s))->insertAtFront(p);
                 } else {
                     SinglyLinkedList<categoryPair>* pList = new SinglyLinkedList<categoryPair>();
-                    categoryPair p(mData[i].productName, mData[i].id);
+                    categoryPair p(name, id);
                     pList->insertAtFront(p);
                     mCategories.insert(s, pList);
                 }
 
                 // insert id into main table
-                mSearch.insert(mData[i].id, &mData[i]);
+                mSearch.insert(id, &mData[i]);
             }
 
 

@@ -6,24 +6,39 @@
 
 class AmazonProduct {
 
+    private:
+        std::string id;
+        std::string all;
+        std::string productName;
+        std::string categories;
+
     public:
-        std::string id, productName, categories, all;
+        
 
         // constructor
-        AmazonProduct() {
-            // allocate ahead of time to help with malloc load
-            id.reserve(33);
-            productName.reserve(150);
-            categories.reserve(100);
-            all.reserve(100);
-        };
+        AmazonProduct();
 
-        // print all data to console for find operation
-        friend std::ostream& operator<<(std::ostream& lhs, AmazonProduct& rhs) {
-            lhs << rhs.all << std::endl;
+        // destructor
+        ~AmazonProduct();
 
-            return lhs;
-        }
+        // getters
+        std::string getId();
+        std::string getAll();
+        std::string getProductName();
+        std::string getCategories();
+
+        // setters
+        AmazonProduct& setId(std::string newId);
+        AmazonProduct& setAll(std::string line);
+        AmazonProduct& setProductName(std::string newName);
+        AmazonProduct& setCategories(std::string newCategories);
+
+        // public methods
+
+        friend std::ostream& operator<<(std::ostream& lhs, AmazonProduct& rhs);
+
+
+        
 
 };
 
