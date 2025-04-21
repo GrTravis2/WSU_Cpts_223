@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
     // testing entry points!
     //TestSinglyLinkedList().runTests();
     //TestHashMap().runTests();
-    //TestArgParse().runTests();
+    TestArgParse().runTests();
 
     InventoryQueryTool inventory;
     CMD cmd = NONE;

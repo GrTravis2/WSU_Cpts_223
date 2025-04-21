@@ -44,6 +44,14 @@ CMD evalCommand(std::string line)
             // exit when lagging index hits end of string
             leading = line.find(' ', lagging);
             args[i] = line.substr(lagging, leading - lagging);
+
+            // check if word is bound w \" -> then cut on \"!
+            if(leading != std::string::npos
+                && args[i].find('\"') != std::string::npos) {
+                leading = line.find('\"', lagging + 1);
+                args[i] = line.substr(lagging, leading - lagging + 1);
+                leading = line.find(' ', leading); // -> jump to next space
+            }
             if(leading != std::string::npos) { leading += 1; }
             lagging = leading;
         }
@@ -69,7 +77,13 @@ std::string parseArg(std::string line) {
     std::string arg = line.substr(line.find(' ') + 1);
 
     // delete everything after word, starting with first space
-    int pos = arg.find(' ');
+    int pos = 0;
+    if(arg.front() == '\"') {
+        arg = arg.substr(1); // cut off \" char
+        pos = arg.find('\"'); // and look for second one
+    } else {
+        pos = arg.find(' ');
+    }
     if(pos != std::string::npos) {
         arg.erase(pos);
     }

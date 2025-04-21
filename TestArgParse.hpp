@@ -13,6 +13,11 @@ const std::string reverse_order_insertion = "listInventory Skateboarding desc";
 const std::string inorder_merge = "listInventory Skateboarding merge";
 const std::string reverse_order_merge = "listInventory Skateboarding merge desc";
 
+const std::string inorder_insertion_spaces = "listInventory \"Toys & Games\"";
+const std::string reverse_order_insertion_spaces = "listInventory \"Toys & Games\" desc";
+const std::string inorder_merge_spaces = "listInventory \"Toys & Games\" merge";
+const std::string reverse_order_merge_spaces = "listInventory \"Toys & Games\" merge desc";
+
 class TestArgParse {
 
     private:

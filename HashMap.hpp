@@ -83,7 +83,7 @@ HashMap<K, V>::HashMap(int size) {
 // destructor
 template <class K, class V>
 HashMap<K, V>::~HashMap() {
-    delete mData; // delete heap array
+    delete[] mData; // delete heap array
 }
 
 // getters

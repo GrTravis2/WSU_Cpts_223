@@ -105,7 +105,7 @@ InventoryQueryTool::InventoryQueryTool() :
 
 // destructor
 InventoryQueryTool::~InventoryQueryTool() {
-    delete mData;
+    delete[] mData;
     // other destructors will clean up hashtables
 }
 
@@ -179,7 +179,7 @@ std::string InventoryQueryTool::categoryPair::getPrice() {
 
 // for list print operations 
 std::ostream& operator<<(std::ostream& lhs, InventoryQueryTool::categoryPair& rhs) {
-    lhs << rhs.getName();
+    lhs << "$" << rhs.getPrice() << ": " << rhs.getName();
 
     return lhs;
 }

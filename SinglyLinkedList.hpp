@@ -223,7 +223,7 @@ void SinglyLinkedList<T>::insertionSort(bool ascending) { // -> insertion sort l
         std::cout << arr[i] << ",\n";
     }
 
-    delete arr;
+    delete[] arr;
 }
 
 template <class T>
@@ -248,8 +248,8 @@ void SinglyLinkedList<T>::mergeSort(bool ascending) { // -> merge sort list and 
         std::cout << result[i] << ",\n";
     }
 
-    delete arr;
-    delete result;
+    delete[] arr;
+    delete[] result;
 
 }
 
@@ -307,8 +307,8 @@ T* SinglyLinkedList<T>::mergeSortHelper(T* arr, int size, bool (*fun)(T&, T&)) {
         assert(i + j == size); // validate that all elements have been processed
 
         // also dont forget to clean up smaller arrays...
-        delete left;
-        delete right;
+        delete[] left;
+        delete[] right;
 
         return result;
 
