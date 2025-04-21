@@ -2,7 +2,6 @@
 #define INVENTORY_QUERY_TOOL_H
 
 #include <string>
-#include <utility>
 #include <iostream>
 
 #include "AmazonProduct.hpp"
@@ -10,12 +9,7 @@
 #include "SinglyLinkedList.hpp"
 
 #define TABLE_SIZE 20011 // fixed size of data set
-#define FILE "AmazonData_Clean.csv"
-
-typedef struct pair{
-    std::string& name;
-    std::string& price;
-}PAIR;
+#define FILE "AmazonData_Clean2.csv"
 
 class InventoryQueryTool {
 
@@ -30,7 +24,7 @@ class InventoryQueryTool {
             public:
 
                 // constructor
-                categoryPair(std::string& name, std::string& price);
+                categoryPair(std::string newName, std::string newPrice);
 
                 // default constructor
                 categoryPair();

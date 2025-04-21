@@ -10,6 +10,7 @@ class AmazonProduct {
         std::string id;
         std::string all;
         std::string productName;
+        std::string sellingPrice;
         std::string categories;
 
     public:
@@ -25,12 +26,14 @@ class AmazonProduct {
         std::string getId();
         std::string getAll();
         std::string getProductName();
+        std::string getSellingPrice();
         std::string getCategories();
 
         // setters
         AmazonProduct& setId(std::string newId);
         AmazonProduct& setAll(std::string line);
         AmazonProduct& setProductName(std::string newName);
+        AmazonProduct& setSellingPrice(std::string newPrice);
         AmazonProduct& setCategories(std::string newCategories);
 
         // public methods

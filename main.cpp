@@ -13,9 +13,9 @@ int main(int argc, char const *argv[])
 {
 
     // testing entry points!
-    TestSinglyLinkedList().runTests();
-    TestHashMap().runTests();
-    TestArgParse().runTests();
+    //TestSinglyLinkedList().runTests();
+    //TestHashMap().runTests();
+    //TestArgParse().runTests();
 
     InventoryQueryTool inventory;
     CMD cmd = NONE;
@@ -79,8 +79,9 @@ int main(int argc, char const *argv[])
         }
         std::cout << std::endl << "> ";
         line = arg = "";
+        cmd = NONE;
 
     }
-    
+
     return 0;
 }

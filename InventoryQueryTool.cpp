@@ -32,38 +32,43 @@ InventoryQueryTool::InventoryQueryTool() :
             leading = lagging = 0;
 
             // read whole obj as whole line for printing, parse out needed fields
-            //mData[i].all.reserve(100);
             std::getline(f, s, '\n');
             mData[i].setAll(s);
             leading = mData[i].getAll().find(',');
 
             // load id value
             buffer = s.substr(lagging, leading - lagging);
-            mData[i].setId(buffer); 
-
-            lagging = leading + 2; // skip over the ,"
+            mData[i].setId(buffer);
+            lagging = leading + 1;
 
             // load product name
-            leading = s.find('\"', lagging + 1);
+            leading = s.find(',', lagging + 1);
             buffer = s.substr(lagging, leading - lagging);
             mData[i].setProductName(buffer);
             lagging = leading + 1;
 
-            // save category values
+            // load selling price name
             leading = s.find(',', lagging + 1);
             buffer = s.substr(lagging, leading - lagging);
+            mData[i].setSellingPrice(buffer);
+            lagging = leading + 1;
+
+            // save category values
+            leading = s.find('\n', lagging);
+            buffer = s.substr(lagging, leading - lagging);
+            buffer = (buffer == "")? "N/A" : buffer;
             mData[i].setCategories(buffer);
 
             // parse string categories for insert into Categories table
             leading = 0;
             while(leading != std::string::npos) {
-                lagging = leading + 1; // -> copy each category until end of string
-                leading = buffer.find('|', lagging);
+                lagging = leading; // -> copy each category until end of string
+                leading = buffer.find('|', lagging + 1);
 
                 // copy and clean whitespace before/after string before insertion
                 try {
                     while(buffer.at(lagging) == ' ' 
-                    || buffer.at(lagging) == '\"'
+                    || buffer.at(lagging) == '|'
                     || buffer.at(lagging) == ',') {lagging++;}
                 } catch (std::out_of_range) {}
                 s = buffer.substr(lagging, leading - lagging);
@@ -74,13 +79,14 @@ InventoryQueryTool::InventoryQueryTool() :
                 // temp values
                 std::string name = mData[i].getProductName();
                 std::string id = mData[i].getId();
+                std::string price = mData[i].getSellingPrice();
                 if (mCategories.contains(s)) {
                     //mData[i].productName.reserve(50);
-                    categoryPair p(name, id);
+                    categoryPair p(name, price);
                     (*mCategories.find(s))->insertAtFront(p);
                 } else {
                     SinglyLinkedList<categoryPair>* pList = new SinglyLinkedList<categoryPair>();
-                    categoryPair p(name, id);
+                    categoryPair p(name, price);
                     pList->insertAtFront(p);
                     mCategories.insert(s, pList);
                 }
@@ -141,9 +147,9 @@ void InventoryQueryTool::printCategory(std::string key_category, bool insertion,
 // categoryPair subclass definitions
 
 // constructor
-InventoryQueryTool::categoryPair::categoryPair(std::string& name, std::string& price) {
-    name = name;
-    price = price;
+InventoryQueryTool::categoryPair::categoryPair(std::string newName, std::string newPrice) {
+    name = newName;
+    price = newPrice;
 }
 
 // default constructor

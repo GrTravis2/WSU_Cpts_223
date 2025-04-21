@@ -9,7 +9,10 @@ AmazonProduct::AmazonProduct() {
     categories.reserve(100);
     all.reserve(300);
 
-    id = all = categories = productName = "";
+    id = "id";
+    all = "all";
+    categories = "categories";
+    productName = "product name";
 
 };
 
@@ -22,6 +25,7 @@ AmazonProduct::~AmazonProduct() {
 std::string AmazonProduct::getId() { return id; }
 std::string AmazonProduct::getAll() { return all; }
 std::string AmazonProduct::getProductName() { return productName; }
+std::string AmazonProduct::getSellingPrice() {return sellingPrice; }
 std::string AmazonProduct::getCategories() { return categories; }
 
 // setters
@@ -39,6 +43,12 @@ AmazonProduct& AmazonProduct::setAll(std::string line) {
 
 AmazonProduct& AmazonProduct::setProductName(std::string newName) {
     productName = newName;
+
+    return *this;
+}
+
+AmazonProduct& AmazonProduct::setSellingPrice(std::string newPrice) {
+    sellingPrice = newPrice;
 
     return *this;
 }

@@ -114,7 +114,7 @@ class SinglyLinkedList {
         // setters
 
         // public methods
-        void insertAtFront(T& data); // -> allocate and insert new node containing data
+        void insertAtFront(T data); // -> allocate and insert new node containing data
         T* find(const T& data); // -> return ptr to node matching data
         void print(); // -> print all data in list to console
         void insertionSort(bool ascending); // -> insertion sort list and print contents
@@ -150,7 +150,7 @@ T& SinglyLinkedList<T>::front() const {
 
 // public methods
 template <class T>
-void SinglyLinkedList<T>::insertAtFront(T& data) { // -> allocate and insert new node containing data
+void SinglyLinkedList<T>::insertAtFront(T data) { // -> allocate and insert new node containing data
 
     // create new node and check for succesful allocation
     ListNode<T>* pNew = new ListNode<T>(data); 
@@ -260,7 +260,8 @@ template <class T>
 void SinglyLinkedList<T>::deleteList(ListNode<T>* pNode) {
     if (pNode != nullptr) {
         deleteList(pNode->getNextPtr());
-        delete pNode->getNextPtr();
+        //delete pNode->getNextPtr();
+        delete pNode;
     }
 }
 
