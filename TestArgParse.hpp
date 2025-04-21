@@ -26,6 +26,8 @@ class TestArgParse {
         TestArgParse& testParseArg();
 
     public:
+
+        // test entry point
         void runTests();
 
 };

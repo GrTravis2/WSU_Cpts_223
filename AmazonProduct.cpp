@@ -9,7 +9,7 @@ AmazonProduct::AmazonProduct() {
     categories.reserve(100);
     all.reserve(300);
 
-    id = "id";
+    id = "id"; // default values!
     all = "all";
     categories = "categories";
     productName = "product name";

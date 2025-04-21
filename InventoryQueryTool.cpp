@@ -1,4 +1,6 @@
 
+#include <cstdio>
+#include <ctime>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -22,12 +24,10 @@ InventoryQueryTool::InventoryQueryTool() :
     f.open(FILE);
 
     // dump header for overwrite later
-    //std::getline(f, mData[i].id, '\n');
     std::getline(f, buffer, '\n');
 
     if (f.is_open()) {
-        while (i < 100) {
-        //while (f.peek() != EOF) {
+        while (f.peek() != EOF) {
             leading = lagging = 0;
 
             // read whole obj as whole line for printing, parse out needed fields
@@ -79,13 +79,19 @@ InventoryQueryTool::InventoryQueryTool() :
                 std::string name = mData[i].getProductName();
                 std::string id = mData[i].getId();
                 std::string price = mData[i].getSellingPrice();
+                float price_f = 0.0;
+                try {
+                    price_f = std::stof(price);
+                } catch (std::invalid_argument err) {
+                    // invalid text input, set to default 0.0
+                    price_f = 0.0;
+                }
                 if (mCategories.contains(s)) {
-                    //mData[i].productName.reserve(50);
-                    categoryPair p(name, std::stof(price));
+                    categoryPair p(name, price_f);
                     (*mCategories.find(s))->insertAtFront(p);
                 } else {
                     SinglyLinkedList<categoryPair>* pList = new SinglyLinkedList<categoryPair>();
-                    categoryPair p(name, std::stof(price));
+                    categoryPair p(name, price_f);
                     pList->insertAtFront(p);
                     mCategories.insert(s, pList);
                 }
@@ -131,12 +137,26 @@ void InventoryQueryTool::printCategory(std::string key_category, bool insertion,
     SinglyLinkedList<categoryPair>** pList = mCategories.find(key_category);
 
     if(pList != nullptr) {
-        std::cout << "Printing all entries from category: " << key_category << std::endl;
+        std::cout 
+        << "Printing all entries from category: " << key_category << "\n"
+        << "measuring sorting time for sorting " << (*pList)->getSize()
+        << " elements..." << std::endl;
+
+        clock_t start, end;
+        start = clock();
+
         if (insertion) {
             (*pList)->insertionSort(ascending);
         } else {
             (*pList)->mergeSort(ascending);
         }
+
+        end = clock();
+        float duration = (float)(end - start) / CLOCKS_PER_SEC;
+        std::cout.flush(); // empty anything in the stream...
+        std::cout << "sort of " << (*pList)->getSize()
+        << " elements finished in " << duration << " seconds." << std::endl;
+
         
     } else {
         std::cout << "Inventory/Product not found" << std::endl;

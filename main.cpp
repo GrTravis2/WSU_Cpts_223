@@ -13,8 +13,8 @@ int main(int argc, char const *argv[])
 {
 
     // testing entry points!
-    //TestSinglyLinkedList().runTests();
-    //TestHashMap().runTests();
+    TestSinglyLinkedList().runTests();
+    TestHashMap().runTests();
     TestArgParse().runTests();
 
     InventoryQueryTool inventory;
@@ -24,7 +24,9 @@ int main(int argc, char const *argv[])
         "\n Welcome to Amazon Inventory Query System"
         << std::endl;
     std::cout <<
-        " enter :quit to exit. or :help to list supported commands."
+        " enter :quit to exit. or :help to list supported commands.\n" <<
+        "note that arguments containing spaces should be wrapped in quotes!\n" <<
+        "wrong: Toys & Games, correct: \"Toys & Games\""
         << std::endl;
     std::cout << "\n> ";
 
