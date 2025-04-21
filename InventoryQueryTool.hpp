@@ -19,12 +19,12 @@ class InventoryQueryTool {
         class categoryPair {
             private:
                 std::string name;
-                std::string price;
+                float price;
 
             public:
 
                 // constructor
-                categoryPair(std::string newName, std::string newPrice);
+                categoryPair(std::string newName, float newPrice);
 
                 // default constructor
                 categoryPair();
@@ -34,7 +34,7 @@ class InventoryQueryTool {
 
                 // getters
                 std::string getName();
-                std::string getPrice();
+                float getPrice();
 
 
         };

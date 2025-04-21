@@ -11,9 +11,8 @@
 
 // constructor
 InventoryQueryTool::InventoryQueryTool() : 
-    mSearch(TABLE_SIZE), mCategories(TABLE_SIZE) { // was  TABLE_SIZE, now 10
-    //mData = new AmazonProduct[10002]; // exactly the number of rows in csv
-    mData = new AmazonProduct[100];
+    mSearch(TABLE_SIZE), mCategories(TABLE_SIZE) {
+    mData = new AmazonProduct[10002]; // exactly the number of rows in csv
 
     int i, leading, lagging; // init vars and file
     i = leading = lagging = 0;
@@ -82,11 +81,11 @@ InventoryQueryTool::InventoryQueryTool() :
                 std::string price = mData[i].getSellingPrice();
                 if (mCategories.contains(s)) {
                     //mData[i].productName.reserve(50);
-                    categoryPair p(name, price);
+                    categoryPair p(name, std::stof(price));
                     (*mCategories.find(s))->insertAtFront(p);
                 } else {
                     SinglyLinkedList<categoryPair>* pList = new SinglyLinkedList<categoryPair>();
-                    categoryPair p(name, price);
+                    categoryPair p(name, std::stof(price));
                     pList->insertAtFront(p);
                     mCategories.insert(s, pList);
                 }
@@ -147,7 +146,7 @@ void InventoryQueryTool::printCategory(std::string key_category, bool insertion,
 // categoryPair subclass definitions
 
 // constructor
-InventoryQueryTool::categoryPair::categoryPair(std::string newName, std::string newPrice) {
+InventoryQueryTool::categoryPair::categoryPair(std::string newName, float newPrice) {
     name = newName;
     price = newPrice;
 }
@@ -155,7 +154,7 @@ InventoryQueryTool::categoryPair::categoryPair(std::string newName, std::string 
 // default constructor
 InventoryQueryTool::categoryPair::categoryPair() {
     name = "";
-    price = "";
+    price = 0.0;
 }
 
 // assignment operator
@@ -171,7 +170,7 @@ InventoryQueryTool::categoryPair& InventoryQueryTool::categoryPair::operator=(ca
 std::string InventoryQueryTool::categoryPair::getName() {
     return name;
 }
-std::string InventoryQueryTool::categoryPair::getPrice() {
+float InventoryQueryTool::categoryPair::getPrice() {
     return price;
 }
 
