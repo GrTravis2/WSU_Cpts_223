@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <numeric>
 #include <cmath>
+#include <queue>
+#include <assert.h>
 
 // sorting functions
 
@@ -16,6 +18,14 @@ void insertionSort(std::vector<int>& arr);
 void quickSort(std::vector<int>& arr);
 void shellSort(std::vector<int>& arr);
 void heapSort(std::vector<int>& arr);
+
+// sorting helper functions
+
+inline void isSorted(std::vector<int>& arr);
+
+void nSort(std::vector<int>& arr, int n);
+int bidirectionalScan(std::vector<int>& arr);
+void quickSortHelper(std::vector<int>& arr);
 
 // benchmark helper functions
 
