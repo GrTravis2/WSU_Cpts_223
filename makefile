@@ -1,10 +1,13 @@
 ## template makefile for new branches..
 
 main: main.o
-	g++ -std=c++11-g main.o -o MA2
+	g++ -std=c++11 -g ma4.o main.o -o MA4
 
-main.o: BST.h
+main.o: ma4.o
 	g++ -std=c++11 -c -g -Wall main.cpp
+
+ma4.o: ma4.hpp
+	g++ -std=c++11 -c -g -Wall ma4.cpp
 
 clean:
 	-rm *.o
@@ -12,7 +15,7 @@ clean:
 	-rm *.exe
 
 debug:
-	leaks -atExit --list -- ./MA2
+	leaks -atExit --list -- ./MA4
 
 run:
-	@./MA2
+	@./MA4
