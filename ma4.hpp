@@ -25,7 +25,7 @@ inline void isSorted(std::vector<int>& arr);
 inline void isBiScanSorted(std::vector<int>& arr, int pivotIndex);
 
 void nSort(std::vector<int>& arr, int n);
-int bidirectionalScan(std::vector<int>& arr, int start, int end);
+int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot);
 void quickSortHelper(std::vector<int>& arr, int start, int end);
 
 // benchmark helper functions
@@ -34,7 +34,8 @@ void printStatistics(const std::vector<double> &durations); // -> print timing d
 void sortBenchmark(void (*func)(std::vector<int>&)); // -> runs tests given sorting function
 
 // test cases
-void testBidirectionalScan();
+void runTests();
+void testBidirectionalScan(int arr[], int size, int start, int end, int pivot);
 // 1, 8, 10, 3, 4
 
 #endif

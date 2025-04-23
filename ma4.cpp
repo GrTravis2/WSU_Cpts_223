@@ -28,7 +28,10 @@ void quickSortHelper(std::vector<int>& arr, int start, int end) {
 
     if((end - start) > 0) { // skip single element arr -> consider it sorted
 
-        int pivot = bidirectionalScan(arr, start, end); // get pivot
+        // pick a random element as pivot
+        int pivot = start + (std::rand() % (end + 1 - start)); // note that std::srand seeds before call...
+
+        pivot = bidirectionalScan(arr, start, end, pivot); // get pivot
 
         if(pivot > start) { // call recursively on arr range below pivot
             quickSortHelper(arr, start, pivot-1);
@@ -39,13 +42,12 @@ void quickSortHelper(std::vector<int>& arr, int start, int end) {
     }
 }
 
-int bidirectionalScan(std::vector<int>& arr, int start, int end) {
+int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
 
     std::vector<int> log;
-    for(int i = start; i < end + 1; i++) { log.push_back(arr[i]); }
+    for(int i = 0; i < arr.size(); i++) { log.push_back(arr[i]); }
 
-    // pick a random element as pivot
-    int pivot = start + (std::rand() % (end + 1 - start)); // note that std::srand seeds before call...
+    
     int left = start;
     int right = end;
     int buff = 0;
@@ -53,7 +55,7 @@ int bidirectionalScan(std::vector<int>& arr, int start, int end) {
     while(left <= right) { // continue loop until left crosses right!
 
         while(left < end && arr[left] < arr[pivot])  { left++; }
-        while(right > start &&  arr[right] >= arr[pivot]) { right--; }
+        while(right > start - 1 &&  arr[right] >= arr[pivot]) { right--; }
 
         // do the swap
         if (left <= right) {
@@ -194,11 +196,15 @@ void sortBenchmark(void (*func)(std::vector<int>&)) {
 }
 
 // test cases
-void testBidirectionalScan() {
-    // first test case from err
-    int t0[] = {9, 0, 8, 9, 2, 1, 3, 9, 10, 5};
+void testBidirectionalScan(int arr[], int size, int start, int end, int pivot) {
     std::vector<int> vec;
-    for(int i = 0; i < 10; i++) { vec.push_back(t0[i]); }
-    bidirectionalScan(vec, 0, vec.size() - 1);
+    for(int i = 0; i < size; i++) { vec.push_back(arr[i]); }
+    bidirectionalScan(vec, start, end, pivot);
+}
 
+void runTests() {
+    // ;) fill with test cases
+
+    int t[] = {4, 0, 9, 4, 0, 10, 1, 9, 10, 5};
+    testBidirectionalScan(t, 10, 0, 9, 4);
 }

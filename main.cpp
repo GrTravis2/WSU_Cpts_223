@@ -6,7 +6,7 @@
 int main(void) {
 
     // tests
-    testBidirectionalScan();
+    runTests();
 
     std::cout << " ** INSERTION SORT START ** " << std::endl;
     sortBenchmark(insertionSort);   // insertion sort testing
