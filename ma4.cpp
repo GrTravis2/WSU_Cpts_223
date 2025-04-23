@@ -44,10 +44,6 @@ void quickSortHelper(std::vector<int>& arr, int start, int end) {
 
 int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
 
-    std::vector<int> log;
-    for(int i = 0; i < arr.size(); i++) { log.push_back(arr[i]); }
-
-    
     int left = start;
     int right = end;
     int buff = 0;
@@ -75,7 +71,9 @@ int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
 }
 
 void shellSort(std::vector<int> &arr) {
-    nSort(arr, 7); // -> start recursive process, use increment seq 7, 5, 3, 1
+    //nSort(arr, 7); // -> start recursive process, use increment seq 7, 5, 3, 1
+    int seq[] = {29, 23, 19, 17, 13, 11, 7, 5, 3, 1};
+    for(int i = 0; i < 10; i++) { nSort(arr, seq[i]); }
 }
 
 void nSort(std::vector<int>& arr, int n) {
@@ -103,7 +101,7 @@ void nSort(std::vector<int>& arr, int n) {
         }
 
         // repeat with reduced increment sequence
-        nSort(arr, n - 2);
+        //nSort(arr, n - 2);
 
     }
 }
