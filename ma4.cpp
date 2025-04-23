@@ -20,50 +20,56 @@ void insertionSort(std::vector<int> &arr) {
 
 void quickSort(std::vector<int> &arr) {
 
-    //int pivot = bidirectionalScan(arr); // partition before quick sort
+    quickSortHelper(arr, 0, arr.size() - 1);
 
-//}
+}
 
-//void quickSortHelper(std::vector<int>& arr) {
+void quickSortHelper(std::vector<int>& arr, int start, int end) {
 
-    int pivot = bidirectionalScan(arr); // get pivot
-    std::vector<int> vec;
+    if((end - start) > 0) { // skip single element arr -> consider it sorted
 
-    if(pivot > 0) { // call recursively on arr range below pivot
-        for(int i = 0; i < pivot; i++) { vec.push_back(arr[i]); }
-        quickSortHelper(vec);
-        vec.clear();
-    }
-    if(pivot < arr.size()) { // call recursively on arr range above pivot
-        for(int i = arr.size() - 1; i > pivot; i--) { vec.push_back(arr[i]); }
-        quickSortHelper(vec);
-        vec.clear();
+        int pivot = bidirectionalScan(arr, start, end); // get pivot
+
+        if(pivot > start) { // call recursively on arr range below pivot
+            quickSortHelper(arr, start, pivot-1);
+        }
+        if(pivot < end) { // call recursively on arr range above pivot
+            quickSortHelper(arr, pivot + 1, end);
+        }
     }
 }
 
-int bidirectionalScan(std::vector<int>& arr) {
+int bidirectionalScan(std::vector<int>& arr, int start, int end) {
+
+    std::vector<int> log;
+    for(int i = start; i < end + 1; i++) { log.push_back(arr[i]); }
 
     // pick a random element as pivot
-    int size = arr.size();
-    int pivot = std::rand() % size; // note that std::srand seeds before call...
-    int i = 0;
-    int j = size - 1; // get left and right pointers
+    int pivot = start + (std::rand() % (end + 1 - start)); // note that std::srand seeds before call...
+    int left = start;
+    int right = end;
     int buff = 0;
 
-    while(i <= j) { // continue loop until i crosses j!
-        if (arr[i] > arr[pivot] && arr[j] < arr[pivot]) { // make the swap!
-            buff = arr[i], arr[i] = arr[j], arr[j] = buff;
-            i++;
-            j--;
+    while(left <= right) { // continue loop until left crosses right!
+
+        while(left < end && arr[left] < arr[pivot])  { left++; }
+        while(right > start &&  arr[right] >= arr[pivot]) { right--; }
+
+        // do the swap
+        if (left <= right) {
+            if(left == pivot) { pivot = right; } // update pivot if its getting swapped
+            buff = arr[left], arr[left] = arr[right], arr[right] = buff;
+            left++;
+            right--;
         }
-        while(i < size && arr[i] <= arr[pivot]) { i++; }
-        while(j > -1   && arr[j] >= arr[pivot]) { j--; }
     }
 
     // should be in correct order for algo, just swap pivot and i
-    buff = arr[i], arr[i] = arr[pivot], arr[pivot] = buff;
+    buff = arr[left], arr[left] = arr[pivot], arr[pivot] = buff;
 
-    return i; // return pivot index for quicksort
+    isBiScanSorted(arr, left); // validate
+
+    return left; // return pivot index for quicksort
 }
 
 void shellSort(std::vector<int> &arr) {
@@ -111,13 +117,21 @@ void heapSort(std::vector<int> &arr) {
 // sorting helper functions
 
 inline void isSorted(std::vector<int>& arr) {
-    //bool ok = true;
     int size = arr.size();
 
     for (int i = 1; i < size; i++) {
-        //if(arr[i - 1] > arr[i]) { ok = false; }
-        assert(!(arr[i - 1] > arr[i]));
+        assert(arr[i - 1] <= arr[i]);
     }
+}
+
+inline void isBiScanSorted(std::vector<int>& arr, int pivotIndex) {
+    int pivotValue = arr[pivotIndex];
+
+    // check values before pivot are less than pivot
+    for(int i = 0; i < pivotIndex; i++) { assert(arr[i] <= pivotValue); }
+
+    // check values after pivot are greater than or equal to pivot
+    for(int i = pivotIndex + 1; i < arr.size(); i++) { assert(pivotValue <= arr[i]); }
 }
 
 // benchmark helper functions
@@ -142,12 +156,13 @@ void printStatistics(const std::vector<double> &durations)
     std::cout << "Standard Deviation: " << stdDev << " ms\n";
 }
 
-void sortBenchmark(void(*func)(std::vector<int>&)) {
+void sortBenchmark(void (*func)(std::vector<int>&)) {
     // Size of the collection
     //const int N = 10000;
     const int N = 10; // -> smaller N for testing...
     // Max limit for the random generation
-    const int MAX_VAL = 100000;
+    //const int MAX_VAL = 100000;
+    const int MAX_VAL = 10; // -> smaller max value for testing...
     // Total trial (use the same for other sorting algorithms)
     const int TRIALS = 10;
 
@@ -178,13 +193,12 @@ void sortBenchmark(void(*func)(std::vector<int>&)) {
     printStatistics(durations);
 }
 
-/*
-int main()
-{
-    
+// test cases
+void testBidirectionalScan() {
+    // first test case from err
+    int t0[] = {9, 0, 8, 9, 2, 1, 3, 9, 10, 5};
+    std::vector<int> vec;
+    for(int i = 0; i < 10; i++) { vec.push_back(t0[i]); }
+    bidirectionalScan(vec, 0, vec.size() - 1);
 
-    
-
-    return 0;
 }
-*/
