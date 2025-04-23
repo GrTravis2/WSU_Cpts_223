@@ -69,7 +69,7 @@ int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
     // should be in correct order for algo, just swap pivot and i
     buff = arr[left], arr[left] = arr[pivot], arr[pivot] = buff;
 
-    isBiScanSorted(arr, left); // validate
+    //isBiScanSorted(arr, left); // validate
 
     return left; // return pivot index for quicksort
 }
@@ -82,24 +82,29 @@ void nSort(std::vector<int>& arr, int n) {
 
     // base case!
     if(n > 0) {
-        // temp variables
-        int size = arr.size(); 
-        int index = -1;
-        std::vector<int> vec;
 
-        // created floor(size / n) vectors and sort in place before emptying
+        // temp variables
+        int size = arr.size();
+        int key = 0;
+        int k = -1;
+
         for(int i = 0; i < n; i++) {
-            index = i;
-            while(index < size) {
-                vec.push_back(arr[index]);
-                index += n;
+
+            for(int j = i + n; j < size; j += n) {
+                k = j;
+                key = arr[j];
+
+                while(k > n - 1 && arr[k - n] > key) {
+                    arr[k] = arr[k - n];
+                    k -= n;   // step down by increment
+                }
+                arr[k] = key;
             }
-            insertionSort(vec);
-            vec.clear();
         }
 
         // repeat with reduced increment sequence
         nSort(arr, n - 2);
+
     }
 }
 
@@ -111,7 +116,7 @@ void heapSort(std::vector<int> &arr) {
     // remove from min heap until empty -> data should be sorted!
     int i = 0;
     while(!minHeap.empty()) {
-        arr[i] = minHeap.top();
+        arr[i++] = minHeap.top();
         minHeap.pop();
     }
 }
@@ -160,11 +165,11 @@ void printStatistics(const std::vector<double> &durations)
 
 void sortBenchmark(void (*func)(std::vector<int>&)) {
     // Size of the collection
-    //const int N = 10000;
-    const int N = 10; // -> smaller N for testing...
+    const int N = 10000;
+    //const int N = 10; // -> smaller N for testing...
     // Max limit for the random generation
-    //const int MAX_VAL = 100000;
-    const int MAX_VAL = 10; // -> smaller max value for testing...
+    const int MAX_VAL = 100000;
+    //const int MAX_VAL = 10; // -> smaller max value for testing...
     // Total trial (use the same for other sorting algorithms)
     const int TRIALS = 10;
 

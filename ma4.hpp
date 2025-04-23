@@ -36,6 +36,5 @@ void sortBenchmark(void (*func)(std::vector<int>&)); // -> runs tests given sort
 // test cases
 void runTests();
 void testBidirectionalScan(int arr[], int size, int start, int end, int pivot);
-// 1, 8, 10, 3, 4
 
 #endif
