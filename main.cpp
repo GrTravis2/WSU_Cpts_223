@@ -8,6 +8,11 @@ int main(void) {
     // tests
     runTests();
 
+    // I think i'm seeing a cold start issue, first insertion sort always
+    // way slow, adding another run in front. Measure off the 2nd one tho!
+    sortBenchmark(insertionSort);
+    std::cout << "** END OF WARM UP RUN **" << std::endl;
+
     std::cout << " ** INSERTION SORT START ** " << std::endl;
     sortBenchmark(insertionSort);   // insertion sort testing
     std::cout << " ** INSERTION SORT END ** " << std::endl;

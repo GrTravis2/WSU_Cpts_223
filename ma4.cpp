@@ -1,5 +1,6 @@
 
 #include "ma4.hpp"
+#include <cstddef>
 #include <functional>
 #include <queue>
 #include <vector>
@@ -20,6 +21,7 @@ void insertionSort(std::vector<int> &arr) {
 
 void quickSort(std::vector<int> &arr) {
 
+    // start recursive helper on the full data set
     quickSortHelper(arr, 0, arr.size() - 1);
 
 }
@@ -44,12 +46,13 @@ void quickSortHelper(std::vector<int>& arr, int start, int end) {
 
 int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
 
-    int left = start;
+    int left = start; // temp variables
     int right = end;
     int buff = 0;
 
     while(left <= right) { // continue loop until left crosses right!
 
+        // step left and right in, looking for values to swap
         while(left < end && arr[left] < arr[pivot])  { left++; }
         while(right > start - 1 &&  arr[right] >= arr[pivot]) { right--; }
 
@@ -71,39 +74,34 @@ int bidirectionalScan(std::vector<int>& arr, int start, int end, int pivot) {
 }
 
 void shellSort(std::vector<int> &arr) {
-    //nSort(arr, 7); // -> start recursive process, use increment seq 7, 5, 3, 1
-    int seq[] = {29, 23, 19, 17, 13, 11, 7, 5, 3, 1};
-    for(int i = 0; i < 10; i++) { nSort(arr, seq[i]); }
+    //int seq[] = {7, 5, 3, 1}; // -> first tested sequence
+    //int seq[] = {29, 23, 19, 17, 13, 11, 7, 5, 3, 1}; // -> second sequence
+
+    // final sequence
+    int seq[] = {71, 67, 61, 59, 53, 47, 43,41, 37, 31, 29, 23, 19, 17, 13, 11, 7, 5, 3, 1};
+    for(int i = 0; i < 20; i++) { nSort(arr, seq[i]); }
 }
 
 void nSort(std::vector<int>& arr, int n) {
-
-    // base case!
-    if(n > 0) {
 
         // temp variables
         int size = arr.size();
         int key = 0;
         int k = -1;
 
-        for(int i = 0; i < n; i++) {
+        for(int i = 0; i < n; i++) { // subset to sort
 
-            for(int j = i + n; j < size; j += n) {
+            for(int j = i + n; j < size; j += n) { // inner n Sort
                 k = j;
                 key = arr[j];
 
                 while(k > n - 1 && arr[k - n] > key) {
-                    arr[k] = arr[k - n];
-                    k -= n;   // step down by increment
+                    arr[k] = arr[k - n]; // swap and
+                    k -= n;              // step down by increment
                 }
                 arr[k] = key;
             }
         }
-
-        // repeat with reduced increment sequence
-        //nSort(arr, n - 2);
-
-    }
 }
 
 void heapSort(std::vector<int> &arr) {
@@ -121,7 +119,7 @@ void heapSort(std::vector<int> &arr) {
 
 // sorting helper functions
 
-inline void isSorted(std::vector<int>& arr) {
+inline void isSorted(std::vector<int>& arr) { // validate sorting
     int size = arr.size();
 
     for (int i = 1; i < size; i++) {
@@ -129,6 +127,7 @@ inline void isSorted(std::vector<int>& arr) {
     }
 }
 
+// validate biscan algorithm
 inline void isBiScanSorted(std::vector<int>& arr, int pivotIndex) {
     int pivotValue = arr[pivotIndex];
 
@@ -164,10 +163,8 @@ void printStatistics(const std::vector<double> &durations)
 void sortBenchmark(void (*func)(std::vector<int>&)) {
     // Size of the collection
     const int N = 10000;
-    //const int N = 10; // -> smaller N for testing...
     // Max limit for the random generation
     const int MAX_VAL = 100000;
-    //const int MAX_VAL = 10; // -> smaller max value for testing...
     // Total trial (use the same for other sorting algorithms)
     const int TRIALS = 10;
 
